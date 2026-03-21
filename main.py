@@ -925,19 +925,33 @@ async def dl_ausgaben(eid: int, db: Session = Depends(get_db), u: User = Depends
                         filename=f"Ausgaben-E{eid}.txt")
 
 # ── FRONTEND ─────────────────────────────────────────────────────
+# Wichtig: index.html direkt einlesen und als Response zurückgeben
+# FileResponse schlägt fehl wenn das Arbeitsverzeichnis nicht stimmt
 @app.get("/")
 async def root():
-    idx = Path("frontend/index.html")
-    if idx.exists(): return FileResponse(str(idx))
+    for candidate in [
+        Path("frontend/index.html"),
+        Path("/app/frontend/index.html"),
+    ]:
+        if candidate.exists():
+            return FileResponse(str(candidate), media_type="text/html")
     return JSONResponse({"status":"S2-LageLive","health":"/health","docs":"/docs"})
 
 @app.get("/{path:path}")
 async def spa(path: str):
-    fp = Path("frontend") / path
-    if fp.exists() and fp.is_file(): return FileResponse(str(fp))
-    idx = Path("frontend/index.html")
-    if idx.exists(): return FileResponse(str(idx))
-    raise HTTPException(404)
+    # Statische Dateien
+    for base in [Path("frontend"), Path("/app/frontend")]:
+        fp = base / path
+        if fp.exists() and fp.is_file():
+            return FileResponse(str(fp))
+    # SPA-Fallback: immer index.html
+    for candidate in [
+        Path("frontend/index.html"),
+        Path("/app/frontend/index.html"),
+    ]:
+        if candidate.exists():
+            return FileResponse(str(candidate), media_type="text/html")
+    raise HTTPException(404, f"Nicht gefunden: {path}")
 
 # ════════════════════════════════════════════════════════════════
 # START
