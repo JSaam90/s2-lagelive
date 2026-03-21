@@ -11,6 +11,5 @@ COPY . .
 
 RUN mkdir -p data exports uploads
 
-EXPOSE 8000
-
-CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}
+# KEIN Shell-Variablen-Problem: Python liest PORT selbst aus os.environ
+CMD ["python", "main.py"]
