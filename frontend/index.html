@@ -1,1 +1,980 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>S2-LageLive</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{
+  --red:#C8000A;--red-d:#7A0006;
+  --yellow:#FFD100;--yd:#B89500;
+  --green:#1A8A3C;--gl:#22B84E;
+  --blue:#1A5FA8;--bl:#2B7FD4;
+  --orange:#E07B00;
+  --bg:#0C0F12;--p1:#141820;--p2:#1C2330;--p3:#242D3C;
+  --bd:#28354A;--bdh:#384A60;
+  --t0:#FFF;--t1:#C0D0E0;--t2:#607080;--t3:#384858;
+  --fh:'Bebas Neue',sans-serif;
+  --fm:'IBM Plex Mono',monospace;
+  --fb:'IBM Plex Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);color:var(--t1)}
 
+/* LOGIN */
+#login-screen{display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:20px;background:var(--bg)}
+.login-box{background:var(--p1);border:1px solid var(--bd);border-top:3px solid var(--red);border-radius:6px;padding:32px;width:340px}
+.login-logo{font-family:var(--fh);font-size:2rem;letter-spacing:5px;color:var(--t0);text-align:center;margin-bottom:4px}
+.login-sub{font-family:var(--fm);font-size:.63rem;color:var(--yellow);letter-spacing:2px;text-align:center;margin-bottom:24px}
+.lf{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.lf label{font-family:var(--fm);font-size:.6rem;letter-spacing:2px;color:var(--t2);text-transform:uppercase}
+.lf input{background:var(--p3);border:1px solid var(--bd);border-radius:4px;color:var(--t0);font-family:var(--fb);font-size:.88rem;padding:9px 11px;outline:none;width:100%}
+.lf input:focus{border-color:var(--red);box-shadow:0 0 0 2px rgba(200,0,10,.18)}
+.btn-login{width:100%;font-family:var(--fh);font-size:1.1rem;letter-spacing:3px;background:var(--red);color:#fff;border:none;border-radius:4px;padding:12px;cursor:pointer;border-bottom:2px solid var(--red-d)}
+.btn-login:hover{background:#e5000d}
+#login-err{font-family:var(--fm);font-size:.68rem;color:#ff6060;text-align:center;min-height:16px}
+.login-roles{font-family:var(--fm);font-size:.6rem;color:var(--t2);text-align:center;line-height:1.8;margin-top:16px;padding-top:14px;border-top:1px solid var(--bd)}
+
+/* APP */
+#app{display:none;flex-direction:column;height:100vh}
+
+/* TOPBAR */
+#topbar{flex-shrink:0;background:linear-gradient(90deg,#0d0002 0%,var(--p1) 100%);border-bottom:1px solid var(--bd);display:flex;align-items:stretch;min-height:52px}
+.alarm-stripe{width:5px;background:repeating-linear-gradient(180deg,var(--red) 0,var(--red) 8px,var(--yellow) 8px,var(--yellow) 16px);flex-shrink:0;animation:as .5s linear infinite}
+@keyframes as{from{background-position:0 0}to{background-position:0 16px}}
+.tb-brand{padding:8px 18px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--bd)}
+.tb-brand h1{font-family:var(--fh);font-size:1.3rem;letter-spacing:4px;color:var(--t0);line-height:1}
+.tb-brand .sub{font-family:var(--fm);font-size:.55rem;color:var(--yellow);letter-spacing:2px}
+.tb-tabs{display:flex;align-items:stretch;flex:1;overflow-x:auto}
+.tbt{font-family:var(--fm);font-size:.63rem;letter-spacing:1.5px;padding:0 16px;cursor:pointer;border:none;background:transparent;color:var(--t2);border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
+.tbt:hover{color:var(--t1)}.tbt.active{color:var(--yellow);border-bottom-color:var(--yellow)}
+.tbt .n{font-size:.5rem;background:var(--red);color:#fff;border-radius:8px;padding:1px 5px;margin-left:4px;font-weight:700}
+.tb-right{display:flex;align-items:center;gap:12px;padding:0 14px;border-left:1px solid var(--bd);font-family:var(--fm);font-size:.63rem;color:var(--t2);flex-shrink:0}
+.ldot{width:7px;height:7px;border-radius:50%;background:var(--gl);animation:ld 1.3s ease-in-out infinite;display:inline-block;margin-right:4px}
+@keyframes ld{0%,100%{opacity:1}50%{opacity:.2}}
+#lage-badge{background:var(--red);color:#fff;font-family:var(--fh);font-size:.8rem;letter-spacing:2px;padding:4px 12px;border-radius:3px}
+.logout-btn{font-family:var(--fm);font-size:.6rem;padding:4px 10px;border:1px solid var(--bd);background:none;color:var(--t2);border-radius:3px;cursor:pointer}
+.logout-btn:hover{color:var(--t0);border-color:var(--bdh)}
+
+/* TICKER */
+#ticker{flex-shrink:0;background:var(--red-d);border-bottom:1px solid var(--red);padding:3px 0;overflow:hidden;white-space:nowrap}
+#ticker-txt{display:inline-block;animation:tk 35s linear infinite;font-family:var(--fm);font-size:.63rem;color:#fff;padding-left:100%}
+@keyframes tk{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+
+/* NOTIFICATION TOAST */
+#toast-area{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;max-width:360px}
+.toast{background:var(--p1);border:1px solid var(--bd);border-left:4px solid var(--blue);border-radius:4px;padding:10px 14px;font-size:.8rem;animation:tin .3s ease;cursor:pointer}
+.toast.crit{border-left-color:var(--red)}.toast.ok{border-left-color:var(--gl)}
+@keyframes tin{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.toast-title{font-weight:700;color:var(--t0);font-size:.8rem;margin-bottom:2px}
+.toast-body{color:var(--t1);font-size:.75rem;line-height:1.4}
+
+/* PANELS */
+#content{flex:1;overflow:hidden;position:relative}
+.panel{display:none;height:100%;overflow:hidden;flex-direction:column}
+.panel.active{display:flex}
+
+/* LAGEBILD */
+#p-lage{overflow-y:auto}
+.lb-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);flex-shrink:0}
+.lbn{background:var(--p2);padding:12px 8px;text-align:center}
+.lbn .n{font-family:var(--fh);font-size:2rem;line-height:1;margin-bottom:2px}
+.lbn .l{font-family:var(--fm);font-size:.52rem;letter-spacing:1.5px;color:var(--t2);text-transform:uppercase}
+.lbn.cr .n{color:#ff4444;animation:np 1.8s ease-in-out infinite}
+.lbn.wr .n{color:var(--yellow)}.lbn.ok .n{color:var(--gl)}.lbn.if .n{color:var(--bl)}
+@keyframes np{0%,100%{opacity:1}50%{opacity:.5}}
+.lb-body{padding:14px;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--p1);border:1px solid var(--bd);border-radius:4px;overflow:hidden}
+.card-h{background:var(--p2);border-bottom:1px solid var(--bd);padding:8px 12px;display:flex;align-items:center;gap:8px}
+.card-h h4{font-family:var(--fh);font-size:.9rem;letter-spacing:3px;color:var(--t0)}
+.card-h .ts{margin-left:auto;font-family:var(--fm);font-size:.58rem;color:var(--t2)}
+.card-h .stag{font-family:var(--fm);font-size:.55rem;letter-spacing:1px;padding:2px 7px;border-radius:3px}
+.cr-tag{background:#200005;color:#ff6060;border:1px solid var(--red)}
+.wr-tag{background:#1A1500;color:var(--yellow);border:1px solid var(--yd)}
+.ok-tag{background:#0A1A10;color:var(--gl);border:1px solid var(--green)}
+.card-b{padding:12px;font-size:.82rem;line-height:1.65;white-space:pre-wrap;color:var(--t1)}
+
+/* TIMELINE */
+.tl{display:flex;flex-direction:column}
+.te{display:grid;grid-template-columns:70px 1fr;border-left:2px solid var(--bd);margin-left:5px;position:relative}
+.te::before{content:'';position:absolute;left:-5px;top:12px;width:8px;height:8px;border-radius:50%;background:var(--p3);border:2px solid var(--bd)}
+.te.new::before{background:var(--red);border-color:#ff4444;box-shadow:0 0 8px var(--red)}
+.te-t{font-family:var(--fm);font-size:.58rem;color:var(--t2);padding:10px 6px 10px 12px;line-height:1.4}
+.te.new .te-t{color:#ff8888}
+.te-b{padding:8px 8px 8px 10px;border-left:1px solid var(--bd)}
+.tag{font-family:var(--fm);font-size:.52rem;letter-spacing:1px;padding:1px 6px;border-radius:3px;display:inline-block;margin-bottom:4px}
+.t-m{background:#0A1828;color:#5BA8E0}
+.t-e{background:#1A1200;color:#C8A020}
+.t-f{background:#200005;color:#ff8888}
+.t-s{background:#0A1A10;color:var(--gl)}
+.te-b p{font-size:.76rem;line-height:1.55}
+
+/* KARTE */
+#map{height:100%;width:100%}
+.leaflet-tile{filter:grayscale(.45) brightness(.72)}
+.leaflet-control-zoom a{background:var(--p2)!important;color:var(--t1)!important;border-color:var(--bd)!important}
+
+/* TAGEBUCH */
+#p-tagebuch{overflow-y:auto}
+.tb-toolbar{flex-shrink:0;background:var(--p2);border-bottom:1px solid var(--bd);padding:8px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tb-toolbar select,.tb-toolbar input{background:var(--p3);border:1px solid var(--bd);border-radius:4px;color:var(--t1);font-family:var(--fm);font-size:.65rem;padding:5px 9px;outline:none}
+.tb-toolbar select:focus,.tb-toolbar input:focus{border-color:var(--red)}
+.btn-new{font-family:var(--fm);font-size:.63rem;letter-spacing:1px;background:var(--red);color:#fff;border:none;border-radius:4px;padding:6px 14px;cursor:pointer}
+.btn-new:hover{background:#e5000d}
+.btn-exp{font-family:var(--fm);font-size:.63rem;letter-spacing:1px;background:none;color:var(--t2);border:1px solid var(--bd);border-radius:4px;padding:6px 14px;cursor:pointer}
+.btn-exp:hover{color:var(--t0);border-color:var(--bdh)}
+.tagebuch-list{padding:12px 14px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;flex:1}
+.tb-entry{background:var(--p1);border:1px solid var(--bd);border-radius:4px;overflow:hidden;border-left:3px solid var(--bd)}
+.tb-entry.kritisch{border-left-color:var(--red)}
+.tb-entry.hoch{border-left-color:var(--orange)}
+.tb-entry.normal{border-left-color:var(--green)}
+.tb-eh{background:var(--p2);padding:6px 10px;display:flex;align-items:center;gap:8px;font-family:var(--fm);font-size:.6rem;color:var(--t2)}
+.tb-eh .nr{color:var(--t0);font-weight:600}
+.tb-eh .kat{color:var(--yellow)}
+.tb-eh .hash{margin-left:auto;color:var(--t3);font-size:.55rem}
+.tb-ec{padding:8px 10px}
+.tb-ec .betreff{font-weight:700;color:var(--t0);font-size:.82rem;margin-bottom:4px}
+.tb-ec .inhalt{font-size:.78rem;color:var(--t1);line-height:1.5;white-space:pre-wrap}
+.tb-ec .quelle{font-family:var(--fm);font-size:.58rem;color:var(--t2);margin-top:6px}
+.freigabe-badge{font-family:var(--fm);font-size:.55rem;padding:1px 6px;border-radius:3px;background:#0A1A10;color:var(--gl);border:1px solid var(--green)}
+
+/* MODAL */
+#modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:200;align-items:center;justify-content:center;padding:20px}
+#modal-bg.vis{display:flex}
+.modal{background:var(--p1);border:1px solid var(--yellow);border-radius:6px;max-width:600px;width:100%;max-height:85vh;overflow-y:auto}
+.modal-h{background:var(--p2);border-bottom:1px solid var(--bd);padding:12px 18px;display:flex;align-items:center;gap:10px}
+.modal-h h3{font-family:var(--fh);font-size:1.1rem;letter-spacing:3px;color:var(--yellow)}
+.modal-h .cls{margin-left:auto;background:none;border:1px solid var(--bd);color:var(--t2);border-radius:3px;padding:3px 9px;cursor:pointer;font-family:var(--fm);font-size:.63rem}
+.modal-b{padding:18px;display:flex;flex-direction:column;gap:12px}
+.mf{display:flex;flex-direction:column;gap:4px}
+.mf label{font-family:var(--fm);font-size:.6rem;letter-spacing:2px;color:var(--t2);text-transform:uppercase}
+.mf input,.mf select,.mf textarea{background:var(--p3);border:1px solid var(--bd);border-radius:4px;color:var(--t0);font-family:var(--fb);font-size:.85rem;padding:8px 10px;outline:none;width:100%;resize:vertical}
+.mf input:focus,.mf select:focus,.mf textarea:focus{border-color:var(--yellow);box-shadow:0 0 0 2px rgba(255,209,0,.12)}
+.mf textarea{min-height:90px}
+.mf select option{background:var(--p3)}
+.mg2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-f{padding:12px 18px;border-top:1px solid var(--bd);display:flex;gap:8px}
+.btn-save{font-family:var(--fh);font-size:1rem;letter-spacing:2px;background:var(--red);color:#fff;border:none;border-radius:4px;padding:9px 24px;cursor:pointer;border-bottom:2px solid var(--red-d)}
+.btn-save:hover{background:#e5000d}
+.btn-cancel{font-family:var(--fb);font-size:.8rem;color:var(--t2);background:none;border:1px solid var(--bd);border-radius:4px;padding:8px 16px;cursor:pointer}
+
+/* KRÄFTE */
+#p-kraefte{overflow-y:auto;padding:12px 14px}
+.kf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.kf-card{background:var(--p2);border:1px solid var(--bd);border-radius:4px;padding:10px 12px;border-left:3px solid var(--bd)}
+.kf-card.fw{border-left-color:var(--red)}.kf-card.rd{border-left-color:var(--gl)}.kf-card.thw{border-left-color:var(--bl)}.kf-card.ext{border-left-color:var(--orange)}
+.kf-org{font-family:var(--fm);font-size:.55rem;letter-spacing:1.5px;color:var(--t2);text-transform:uppercase;margin-bottom:3px}
+.kf-name{font-weight:700;color:var(--t0);font-size:.85rem;margin-bottom:3px}
+.kf-func{font-size:.75rem;color:var(--t1);margin-bottom:6px}
+.kf-meta{display:flex;gap:5px;flex-wrap:wrap}
+.ks{font-family:var(--fm);font-size:.58rem;padding:2px 6px;border-radius:3px;background:var(--p3)}
+.ks.g{background:#0A1A10;color:var(--gl)}.ks.y{background:#1A1500;color:var(--yellow)}.ks.b{background:#0A1020;color:var(--bl)}
+
+/* EINGABE (Sidebar-Modus) */
+#p-eingabe{overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+.fsec{margin-bottom:8px}
+.fsec-label{font-family:var(--fm);font-size:.58rem;letter-spacing:2.5px;color:var(--yd);text-transform:uppercase;padding:4px 0;border-bottom:1px solid var(--bd);margin-bottom:8px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.frow.full{grid-template-columns:1fr}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-family:var(--fm);font-size:.58rem;letter-spacing:1.5px;color:var(--t2);text-transform:uppercase}
+.field input,.field select,.field textarea{background:var(--p3);border:1px solid var(--bd);border-radius:4px;color:var(--t0);font-family:var(--fb);font-size:.85rem;padding:8px 10px;outline:none;width:100%;resize:vertical;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--red);box-shadow:0 0 0 2px rgba(200,0,10,.18)}
+.field textarea{min-height:72px}
+.field input[type=datetime-local]{color-scheme:dark}
+.field select option{background:var(--p3)}
+.tz-chips{display:flex;flex-wrap:wrap;gap:4px}
+.tzc{display:flex;align-items:center;gap:3px;padding:3px 8px;border:1px solid var(--bd);border-radius:10px;background:var(--p3);cursor:pointer;font-size:.63rem;color:var(--t2);transition:all .12s;user-select:none}
+.tzc:hover{border-color:var(--bdh);color:var(--t1)}
+.tzc.sel{border-color:var(--yellow);color:var(--yellow);background:#1A1500}
+.out-checks{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.outc{display:flex;align-items:center;gap:6px;padding:5px 8px;background:var(--p3);border:1px solid var(--bd);border-radius:4px;cursor:pointer;font-size:.73rem;color:var(--t1);transition:border-color .12s}
+.outc:hover{border-color:var(--bdh)}
+.outc input{accent-color:var(--yellow);width:12px;height:12px}
+#ai-status{font-family:var(--fm);font-size:.63rem;padding:7px 10px;border-radius:4px;background:var(--p3);border:1px solid var(--bd);color:var(--t2);display:flex;align-items:center;gap:6px}
+#ai-status.thinking{border-color:var(--yellow);color:var(--yellow)}
+#ai-status.done{border-color:var(--gl);color:var(--gl)}
+#ai-status.error{border-color:var(--red);color:#ff8888}
+.spin{display:inline-block;width:10px;height:10px;border:2px solid rgba(255,209,0,.3);border-top-color:var(--yellow);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn-submit{font-family:var(--fh);font-size:1rem;letter-spacing:3px;background:var(--red);color:#fff;border:none;border-radius:4px;padding:12px;cursor:pointer;width:100%;border-bottom:2px solid var(--red-d);transition:background .15s}
+.btn-submit:hover{background:#e5000d}
+.btn-submit:disabled{background:#3A1A1A;color:#555;cursor:not-allowed}
+.btn-load{font-family:var(--fm);font-size:.6rem;letter-spacing:1px;padding:7px 14px;border-radius:4px;cursor:pointer;background:var(--p3);border:1px solid var(--bd);color:var(--t2);width:100%}
+.btn-load:hover{color:var(--t0);border-color:var(--bdh)}
+
+/* BEAMER */
+#p-beamer{overflow-y:auto;background:#000;padding:24px}
+.bm-title{font-family:var(--fh);font-size:3.5rem;letter-spacing:8px;color:#fff;text-align:center;margin-bottom:8px}
+.bm-sub{font-family:var(--fm);font-size:.8rem;color:var(--yellow);text-align:center;letter-spacing:3px;margin-bottom:28px}
+.bm-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.bm-num{background:#111;border:1px solid #333;border-radius:6px;padding:20px;text-align:center}
+.bm-num .n{font-family:var(--fh);font-size:4rem;line-height:1}
+.bm-num .l{font-family:var(--fm);font-size:.72rem;color:#888;text-transform:uppercase;letter-spacing:2px;margin-top:4px}
+.bm-num.cr .n{color:#ff4444}.bm-num.wr .n{color:var(--yellow)}.bm-num.ok .n{color:var(--gl)}
+.bm-ticker{background:#111;border:1px solid #333;border-radius:4px;padding:12px 16px;overflow:hidden;white-space:nowrap;font-family:var(--fm);font-size:.78rem;color:#aaa}
+
+@media(max-width:680px){
+  .lb-nums{grid-template-columns:repeat(2,1fr)}
+  .bm-nums{grid-template-columns:repeat(2,1fr)}
+  .frow{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">S2-LageLive</div>
+    <div class="login-sub">FwDV 102 / DV 100 · KI-UNTERSTÜTZUNG</div>
+    <div class="lf"><label>Benutzername</label><input type="text" id="l-user" placeholder="z. B. s2" autocomplete="username"/></div>
+    <div class="lf"><label>Passwort</label><input type="password" id="l-pass" placeholder="Passwort" autocomplete="current-password"/></div>
+    <div id="login-err"></div>
+    <button class="btn-login" onclick="doLogin()">ANMELDEN</button>
+    <div class="login-roles">
+      admin / admin123 · s2 / s2pass · el / elpass<br/>
+      buerger / buerger · presse / presse · extern / extern
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div id="topbar">
+    <div class="alarm-stripe"></div>
+    <div class="tb-brand">
+      <h1>S2-LageLive</h1>
+      <div class="sub">FwDV 102 / DV 100</div>
+    </div>
+    <div class="tb-tabs">
+      <button class="tbt active" onclick="showPanel('lage',this)">📊 Lagebild</button>
+      <button class="tbt" onclick="showPanel('karte',this)">🗺 Karte</button>
+      <button class="tbt" onclick="showPanel('tagebuch',this)">📋 Tagebuch <span class="n" id="tb-badge">0</span></button>
+      <button class="tbt" onclick="showPanel('kraefte',this)">🚒 Kräfte</button>
+      <button class="tbt" onclick="showPanel('eingabe',this)">✏ Lageeingabe</button>
+      <button class="tbt" onclick="showPanel('beamer',this)">📺 Beamer</button>
+    </div>
+    <div class="tb-right">
+      <span><span class="ldot"></span><span id="user-display">–</span></span>
+      <span id="clock">––:––</span>
+      <div id="lage-badge">BEREIT</div>
+      <button class="logout-btn" onclick="doLogout()">Abmelden</button>
+    </div>
+  </div>
+  <div id="ticker"><span id="ticker-txt">⚠ S2-LageLive bereit · Lageeingabe vornehmen · FwDV 102 / DV 100</span></div>
+
+  <div id="content">
+
+    <!-- LAGEBILD -->
+    <div class="panel active" id="p-lage">
+      <div class="lb-nums">
+        <div class="lbn cr"><div class="n" id="d-tote">–</div><div class="l">Tote</div></div>
+        <div class="lbn cr"><div class="n" id="d-versch">–</div><div class="l">Verschüttete</div></div>
+        <div class="lbn wr"><div class="n" id="d-verl">–</div><div class="l">Verletzte</div></div>
+        <div class="lbn wr"><div class="n" id="d-obdach">–</div><div class="l">Obdachlose</div></div>
+      </div>
+      <div class="lb-body">
+        <div class="card">
+          <div class="card-h">
+            <h4>Aktuelle Lagebeschreibung</h4>
+            <span class="stag wr-tag" id="d-lsuf">–</span>
+            <span class="ts" id="d-stand">–</span>
+          </div>
+          <div class="card-b" id="d-lage" style="color:var(--t2);font-style:italic">Noch keine Lageeingabe. Formular ausfüllen und KI-Analyse starten.</div>
+        </div>
+        <div class="card">
+          <div class="card-h"><h4>Schadenslage</h4></div>
+          <div class="card-b" id="d-schaden" style="color:var(--t2);font-style:italic">–</div>
+        </div>
+        <div class="card" id="extra-card" style="display:none">
+          <div class="card-h"><h4>Weitere KI-Ausgaben</h4></div>
+          <div class="card-b" id="d-extra"></div>
+        </div>
+        <div class="card">
+          <div class="card-h"><h4>Lagefortschreibung</h4></div>
+          <div class="card-b" style="padding:0">
+            <div class="tl" id="d-timeline" style="padding:10px 12px">
+              <div style="color:var(--t2);font-style:italic;font-size:.78rem">Noch keine Einträge.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KARTE -->
+    <div class="panel" id="p-karte"><div id="map"></div></div>
+
+    <!-- TAGEBUCH -->
+    <div class="panel" id="p-tagebuch">
+      <div class="tb-toolbar">
+        <span style="font-family:var(--fm);font-size:.63rem;color:var(--t0)">Einsatztagebuch</span>
+        <select id="tb-filter" onchange="filterTagebuch()">
+          <option value="">Alle Kategorien</option>
+          <option>Lage</option><option>Maßnahme</option><option>Meldung</option>
+          <option>Vordruck</option><option>E-Mail</option><option>System</option>
+        </select>
+        <select id="tb-prio-filter" onchange="filterTagebuch()">
+          <option value="">Alle Prioritäten</option>
+          <option>kritisch</option><option>hoch</option><option>normal</option>
+        </select>
+        <button class="btn-new" onclick="openModal()">+ Neuer Eintrag</button>
+        <button class="btn-exp" onclick="exportPDF()">PDF-Export</button>
+        <button class="btn-exp" onclick="verifyChain()">🔒 Integrität prüfen</button>
+        <span style="margin-left:auto;font-family:var(--fm);font-size:.6rem;color:var(--t2)" id="tb-count">0 Einträge</span>
+      </div>
+      <div class="tagebuch-list" id="tb-list"><div style="color:var(--t2);font-style:italic;padding:20px;text-align:center">Noch keine Einträge.</div></div>
+    </div>
+
+    <!-- KRÄFTE -->
+    <div class="panel" id="p-kraefte">
+      <div style="padding:10px 14px;border-bottom:1px solid var(--bd);background:var(--p2);font-family:var(--fm);font-size:.63rem;color:var(--t2);display:flex;gap:12px;align-items:center;flex-shrink:0">
+        <span style="color:var(--t0)">Kräfteübersicht · FwDV 102</span>
+        <span>🔴 FW &nbsp; 🟢 RD &nbsp; 🔵 THW &nbsp; 🟠 Extern</span>
+        <span id="krf-stand" style="margin-left:auto">–</span>
+      </div>
+      <div class="kf-grid" style="padding:12px 14px;overflow-y:auto;flex:1" id="d-kraefte">
+        <div style="color:var(--t2);font-style:italic;font-size:.8rem">Warte auf Lageeingabe …</div>
+      </div>
+    </div>
+
+    <!-- EINGABE -->
+    <div class="panel" id="p-eingabe">
+      <div class="fsec">
+        <div class="fsec-label">01 · Grunddaten</div>
+        <div class="frow">
+          <div class="field"><label>Stichwort</label>
+            <select id="f-stw">
+              <option value="">–</option>
+              <option>B3 – Großbrand</option><option>THL – TH Leben</option>
+              <option>GG – Gefahrgut</option><option>HW – Hochwasser</option>
+              <option>MANV</option><option>KAT – Katastrophe</option>
+            </select></div>
+          <div class="field"><label>Lagestufe</label>
+            <select id="f-lsuf">
+              <option>Erstmeldung</option><option>Laufend / Stabil</option>
+              <option>Eskalierend</option><option>MANV / Katastrophe</option><option>Rückgang</option>
+            </select></div>
+        </div>
+        <div class="frow full"><div class="field"><label>Einsatzort *</label><input type="text" id="f-ort" placeholder="Straße, Ort, Gemeinde"/></div></div>
+        <div class="frow">
+          <div class="field"><label>Einsatzleiter</label><input type="text" id="f-el" placeholder="Name, Dienstgrad"/></div>
+          <div class="field"><label>Alarmzeit</label><input type="datetime-local" id="f-atz"/></div>
+        </div>
+      </div>
+
+      <div class="fsec">
+        <div class="fsec-label">02 · Taktische Zeichen (FwDV 102)</div>
+        <div class="tz-chips" id="tz-chips">
+          <div class="tzc" onclick="this.classList.toggle('sel')" data-v="Erdbeben">🏚 Erdbeben</div>
+          <div class="tzc" onclick="this.classList.toggle('sel')" data-v="Brand/Feuer">🔥 Brand</div>
+          <div class="tzc" onclick="this.classList.toggle('sel')" data-v="Hochwasser/Überflutung">🌊 Hochwasser</div>
+          <div class="tzc" onclick="this.classList.toggle('sel')" data-v="Dammbruch">🌊 Dammbruch</div>
+          <div class="tzc" onclick="this.classList.toggle('sel')" data-v="Bauwerksschaden/Einsturz">🏗 Einsturz</div>
+          <div class="tzc" onclick="this.classList.toggle('sel')" data-v="ABC/CBRN">☢️ ABC</div>
+          <div class="tzc" onclick="this.classList.toggle('sel')" data-v="Gefahrgut">⚠️ GG</div>
+          <div class="tzc" onclick="this.classList.toggle('sel')" data-v="Stromausfall/KRITIS">⚡ KRITIS</div>
+          <div class="tzc" onclick="this.classList.toggle('sel')" data-v="MANV">🚑 MANV</div>
+          <div class="tzc" onclick="this.classList.toggle('sel')" data-v="Vermisste">🔍 Vermisste</div>
+          <div class="tzc" onclick="this.classList.toggle('sel')" data-v="Waldbrand">🌲 Waldbrand</div>
+        </div>
+      </div>
+
+      <div class="fsec">
+        <div class="fsec-label">03 · Schadenslage</div>
+        <div class="frow full"><div class="field"><label>Schadenslage *</label><textarea id="f-sl" placeholder="Was? Wo? Wie groß? Tendenz?"></textarea></div></div>
+        <div class="frow full"><div class="field"><label>Gefahrenlage / Entwicklung</label><textarea id="f-gl" placeholder="Ausbreitung, Gefahrenpotenzial …" style="min-height:50px"></textarea></div></div>
+      </div>
+
+      <div class="fsec">
+        <div class="fsec-label">04 · Opfer</div>
+        <div class="frow">
+          <div class="field"><label>Tote</label><input type="number" id="f-tote" placeholder="0" min="0"/></div>
+          <div class="field"><label>Verletzte</label><input type="number" id="f-verl" placeholder="0" min="0"/></div>
+        </div>
+        <div class="frow">
+          <div class="field"><label>Verschüttete</label><input type="number" id="f-versch" placeholder="0" min="0"/></div>
+          <div class="field"><label>Obdachlose</label><input type="number" id="f-obdach" placeholder="0" min="0"/></div>
+        </div>
+      </div>
+
+      <div class="fsec">
+        <div class="fsec-label">05 · Kräfte & Geo</div>
+        <div class="frow full"><div class="field"><label>Kräfte (Org · Einheit · Funktion · Stärke)</label><textarea id="f-krf" placeholder="FW · FF Offenburg · Bergung A1 · 80 Mann&#10;RD · Ortenau · BHP · 12×RTW" style="min-height:60px"></textarea></div></div>
+        <div class="frow full"><div class="field"><label>Geo / Sperrungen</label><textarea id="f-geo" placeholder="A5 gesperrt, Zufahrten, Bereitstellungsräume …" style="min-height:50px"></textarea></div></div>
+        <div class="frow">
+          <div class="field"><label>Koordinaten</label><input type="text" id="f-koor" placeholder="48.473°N, 7.941°E"/></div>
+          <div class="field"><label>Temperatur / Wind</label><input type="text" id="f-wetter" placeholder="+18°C · 15km/h S"/></div>
+        </div>
+      </div>
+
+      <div class="fsec">
+        <div class="fsec-label">06 · KI-Ausgabeprodukte</div>
+        <div class="out-checks">
+          <label class="outc"><input type="checkbox" name="out" value="Aktuelle Lagebeschreibung" checked/> 📋 Lagebeschreibung</label>
+          <label class="outc"><input type="checkbox" name="out" value="Kurzlage für Besprechung"/> ⚡ Kurzlage</label>
+          <label class="outc"><input type="checkbox" name="out" value="Management Summary"/> 👔 Mgmt. Summary</label>
+          <label class="outc"><input type="checkbox" name="out" value="Pressemitteilung"/> 📰 Pressemitteilung</label>
+          <label class="outc"><input type="checkbox" name="out" value="Bürgerinformation"/> 🏘 Bürgerinfo</label>
+          <label class="outc"><input type="checkbox" name="out" value="Offene Punkte"/> ❓ Offene Punkte</label>
+        </div>
+        <div class="field" style="margin-top:8px"><label>Hinweise an KI</label><input type="text" id="f-hint" placeholder="sachlich, DV 100 konform, für Bürgermeister …"/></div>
+      </div>
+
+      <div id="ai-status">💬 Bereit · Bitte Lageeingabe ausfüllen</div>
+      <button class="btn-submit" id="btn-sub" onclick="runAnalysis()">🚨 LAGE AN KI ÜBERGEBEN</button>
+      <button class="btn-load" onclick="loadOrtenau()">📂 Übung Ortenau laden</button>
+    </div>
+
+    <!-- BEAMER -->
+    <div class="panel" id="p-beamer">
+      <div class="bm-title">LAGEBILD</div>
+      <div class="bm-sub" id="bm-sub">S2-LageLive · FwDV 102 / DV 100 · Stand –</div>
+      <div class="bm-nums">
+        <div class="bm-num cr"><div class="n" id="bm-tote">–</div><div class="l">Tote</div></div>
+        <div class="bm-num cr"><div class="n" id="bm-versch">–</div><div class="l">Verschüttete</div></div>
+        <div class="bm-num wr"><div class="n" id="bm-verl">–</div><div class="l">Verletzte</div></div>
+        <div class="bm-num wr"><div class="n" id="bm-obdach">–</div><div class="l">Obdachlose</div></div>
+      </div>
+      <div class="bm-ticker" id="bm-ticker">Warte auf Lageeingabe …</div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /app -->
+
+<!-- MODAL -->
+<div id="modal-bg">
+  <div class="modal">
+    <div class="modal-h"><h3>TAGEBUCHEINTRAG</h3><button class="cls" onclick="closeModal()">✕</button></div>
+    <div class="modal-b">
+      <div class="mg2">
+        <div class="mf"><label>Kategorie</label>
+          <select id="m-kat">
+            <option>Lage</option><option>Maßnahme</option><option>Meldung</option>
+            <option>Vordruck</option><option>Information</option>
+          </select></div>
+        <div class="mf"><label>Priorität</label>
+          <select id="m-prio">
+            <option>normal</option><option>hoch</option><option>kritisch</option>
+          </select></div>
+      </div>
+      <div class="mf"><label>Betreff</label><input type="text" id="m-betr" placeholder="Kurzer Betreff …"/></div>
+      <div class="mf"><label>Inhalt *</label><textarea id="m-inh" placeholder="Inhalt der Meldung / des Vorgangs …"></textarea></div>
+      <div class="mg2">
+        <div class="mf"><label>Vordruck-Nr. (optional)</label><input type="text" id="m-vnr" placeholder="z. B. FW-001"/></div>
+        <div class="mf"><label>Von / Absender</label><input type="text" id="m-von" placeholder="z. B. TEL Nord"/></div>
+      </div>
+      <div class="mf"><label>An / Empfänger</label><input type="text" id="m-an" placeholder="z. B. Führungsstab"/></div>
+    </div>
+    <div class="modal-f">
+      <button class="btn-save" onclick="saveEintrag()">EINTRAG SPEICHERN</button>
+      <button class="btn-cancel" onclick="closeModal()">Abbrechen</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div id="toast-area"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// CONFIG – wird automatisch erkannt
+// ══════════════════════════════════════════════
+const BASE = window.location.origin;
+const WS_BASE = BASE.replace('https://','wss://').replace('http://','ws://');
+
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+let token = localStorage.getItem('s2_token') || '';
+let userInfo = JSON.parse(localStorage.getItem('s2_user') || '{}');
+let einsatzId = parseInt(localStorage.getItem('s2_eid') || '1');
+let ws = null;
+let mapObj = null;
+let mapMarkers = [];
+let tagebuchData = [];
+let updateCount = 0;
+let timeline = [];
+
+// ══════════════════════════════════════════════
+// UHRZEIT
+// ══════════════════════════════════════════════
+setInterval(()=>{
+  const t=new Date();
+  document.getElementById('clock').textContent=t.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+},1000);
+
+// ══════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════
+async function doLogin(){
+  const u=document.getElementById('l-user').value.trim();
+  const p=document.getElementById('l-pass').value;
+  if(!u||!p){document.getElementById('login-err').textContent='Bitte beide Felder ausfüllen.';return}
+  try{
+    const fd=new FormData();fd.append('username',u);fd.append('password',p);
+    const r=await fetch(`${BASE}/api/auth/token`,{method:'POST',body:fd});
+    if(!r.ok){const e=await r.json();document.getElementById('login-err').textContent=e.detail||'Anmeldung fehlgeschlagen';return}
+    const d=await r.json();
+    token=d.access_token; userInfo=d.user;
+    localStorage.setItem('s2_token',token);
+    localStorage.setItem('s2_user',JSON.stringify(userInfo));
+    startApp();
+  }catch(e){document.getElementById('login-err').textContent='Server nicht erreichbar: '+e.message}
+}
+document.getElementById('l-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+
+function doLogout(){
+  localStorage.removeItem('s2_token');localStorage.removeItem('s2_user');
+  if(ws)ws.close();
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  token='';userInfo={};
+}
+
+// ══════════════════════════════════════════════
+// APP START
+// ══════════════════════════════════════════════
+function startApp(){
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='flex';
+  document.getElementById('user-display').textContent=userInfo.display_name||userInfo.username||'–';
+  document.getElementById('lage-badge').textContent=(userInfo.role||'').toUpperCase();
+
+  // Einsatz sicherstellen
+  ensureEinsatz().then(()=>{
+    loadTagebuch();
+    connectWebSocket();
+    setTimeout(initMap,300);
+  });
+}
+
+async function ensureEinsatz(){
+  try{
+    const r=await apiFetch(`/api/einsaetze/${einsatzId}`);
+    if(!r.ok){
+      // Einsatz anlegen
+      const e=await apiFetch('/api/einsaetze',{method:'POST',body:JSON.stringify({
+        kennung:`E-${new Date().toISOString().slice(0,10)}`,
+        stichwort:'Neuer Einsatz',einsatzort:'–',lagestufe:'Erstmeldung'
+      })});
+      if(e.ok){const d=await e.json();einsatzId=d.id;localStorage.setItem('s2_eid',einsatzId)}
+    }
+  }catch(e){console.warn('Einsatz:',e)}
+}
+
+function apiFetch(path,opts={}){
+  return fetch(BASE+path,{
+    ...opts,
+    headers:{...(opts.headers||{}),'Content-Type':'application/json','Authorization':'Bearer '+token}
+  });
+}
+
+// ══════════════════════════════════════════════
+// WEBSOCKET
+// ══════════════════════════════════════════════
+function connectWebSocket(){
+  if(ws){try{ws.close()}catch(e){}}
+  ws=new WebSocket(`${WS_BASE}/ws/${einsatzId}?token=${token}`);
+  ws.onopen=()=>showToast('WebSocket verbunden','Live-Updates aktiv',true);
+  ws.onclose=()=>{showToast('Verbindung unterbrochen','Reconnect in 5s …');setTimeout(connectWebSocket,5000)}
+  ws.onerror=()=>{}
+  ws.onmessage=e=>{
+    try{const msg=JSON.parse(e.data);handleWS(msg)}catch(err){}
+  }
+}
+
+function handleWS(msg){
+  switch(msg.type){
+    case 'tagebuch_eintrag':
+      tagebuchData.unshift(msg);
+      updateCount++;
+      document.getElementById('tb-badge').textContent=updateCount;
+      renderTagebuch();
+      addTimelineEntry(msg);
+      showToast(msg.prioritaet==='kritisch'?'🔴 KRITISCH':'📋 Neuer Eintrag',msg.betreff,msg.prioritaet==='kritisch');
+      updateTicker(`Neuer Eintrag ${msg.zeit}: ${msg.betreff}`);
+      break;
+    case 'karten_zeichen':
+      addMapMarker(msg);
+      showToast('📍 Karte aktualisiert',msg.tz_typ||'Neues TZ');
+      break;
+    case 'karten_zeichen_delete':
+      removeMapMarker(msg.id);
+      break;
+    case 'einsatz_update':
+      updateZahlen(msg);
+      break;
+    case 'ki_analyse_fertig':
+      handleKIResult(msg);
+      break;
+    case 'email_eingang':
+      showToast('📧 E-Mail: '+msg.von,msg.betreff,msg.prioritaet==='kritisch');
+      updateTicker(`E-Mail von ${msg.von}: ${msg.betreff}`);
+      break;
+    case 'datei_eingang':
+      showToast('📁 Datei: '+msg.datei,msg.ki_kurz||'verarbeitet');
+      break;
+  }
+}
+
+// ══════════════════════════════════════════════
+// ZAHLEN
+// ══════════════════════════════════════════════
+function updateZahlen(d){
+  const fmt=n=>n!=null?parseInt(n).toLocaleString('de-DE'):'–';
+  ['tote','versch','verl','obdach'].forEach(k=>{
+    const val=d[k]??d['tote'===k?'tote':'verletzte'===k?'verletzte':'verschuettete'===k?'verschuettete':'obdachlose'];
+    if(val!=null){
+      document.getElementById('d-'+k).textContent=fmt(val);
+      document.getElementById('bm-'+k).textContent=fmt(val);
+    }
+  });
+}
+
+// ══════════════════════════════════════════════
+// TAGEBUCH
+// ══════════════════════════════════════════════
+async function loadTagebuch(){
+  try{
+    const r=await apiFetch(`/api/einsaetze/${einsatzId}/tagebuch`);
+    if(r.ok){tagebuchData=(await r.json()).reverse();renderTagebuch()}
+  }catch(e){}
+}
+
+function renderTagebuch(){
+  const kat=document.getElementById('tb-filter').value;
+  const prio=document.getElementById('tb-prio-filter').value;
+  let data=tagebuchData;
+  if(kat)data=data.filter(e=>e.kategorie===kat);
+  if(prio)data=data.filter(e=>e.prioritaet===prio);
+
+  const el=document.getElementById('tb-list');
+  document.getElementById('tb-count').textContent=data.length+' Einträge';
+  if(!data.length){el.innerHTML='<div style="color:var(--t2);font-style:italic;padding:20px;text-align:center">Keine Einträge gefunden.</div>';return}
+
+  el.innerHTML=data.map(e=>`
+    <div class="tb-entry ${e.prioritaet||'normal'}">
+      <div class="tb-eh">
+        <span class="nr">#${String(e.id||0).padStart(4,'0')}</span>
+        <span>${e.eingang_dt?new Date(e.eingang_dt).toLocaleString('de-DE'):(e.zeit||'–')}</span>
+        <span class="kat">${(e.kategorie||'Meldung').toUpperCase()}</span>
+        ${e.freigegeben?'<span class="freigabe-badge">✓ Freigegeben</span>':''}
+        <span class="hash">${(e.entry_hash||e.hash||'').substring(0,12)}…</span>
+      </div>
+      <div class="tb-ec">
+        <div class="betreff">${e.betreff||'–'}</div>
+        <div class="inhalt">${(e.inhalt||e.content||'').substring(0,400)}</div>
+        <div class="quelle">Quelle: ${e.quelle||e.source||'Manuell'} · Autor: ${e.author_name||e.author||'–'}</div>
+      </div>
+    </div>`).join('');
+}
+
+function filterTagebuch(){renderTagebuch()}
+
+function openModal(){document.getElementById('modal-bg').classList.add('vis')}
+function closeModal(){document.getElementById('modal-bg').classList.remove('vis')}
+
+async function saveEintrag(){
+  const inh=document.getElementById('m-inh').value.trim();
+  if(!inh){alert('Inhalt ist erforderlich.');return}
+  try{
+    const r=await apiFetch(`/api/einsaetze/${einsatzId}/tagebuch`,{
+      method:'POST',
+      body:JSON.stringify({
+        kategorie:document.getElementById('m-kat').value,
+        prioritaet:document.getElementById('m-prio').value,
+        betreff:document.getElementById('m-betr').value,
+        inhalt:inh,quelle:'Manuell',
+        vordruck_nr:document.getElementById('m-vnr').value||null,
+        vordruck_von:document.getElementById('m-von').value||null,
+        vordruck_an:document.getElementById('m-an').value||null,
+      })
+    });
+    if(r.ok){
+      closeModal();
+      showToast('✅ Eintrag gespeichert','Mit Hash-Chain verknüpft',false);
+      loadTagebuch();
+    }
+  }catch(e){showToast('Fehler',e.message,true)}
+}
+
+async function verifyChain(){
+  try{
+    const r=await apiFetch(`/api/einsaetze/${einsatzId}/tagebuch/verify`);
+    const d=await r.json();
+    if(d.valid)showToast('🔒 Integrität OK',`${d.eintraege} Einträge geprüft, keine Fehler`,false);
+    else showToast('⚠ Integritätsfehler',`${d.fehler.length} Einträge fehlerhaft!`,true);
+  }catch(e){showToast('Fehler',e.message,true)}
+}
+
+async function exportPDF(){
+  window.open(`${BASE}/api/einsaetze/${einsatzId}/export/tagebuch.pdf?token=${token}`,'_blank');
+}
+
+// ══════════════════════════════════════════════
+// KARTE
+// ══════════════════════════════════════════════
+function initMap(){
+  if(mapObj)return;
+  mapObj=L.map('map',{center:[48.47,7.95],zoom:10});
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'© OpenStreetMap',maxZoom:19
+  }).addTo(mapObj);
+  // Bestehende Zeichen laden
+  loadKartenZeichen();
+  // Klick → Zeichen setzen
+  mapObj.on('click',e=>{
+    if(!confirm(`TZ setzen bei ${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}?`))return;
+    const typ=prompt('Taktisches Zeichen / Bezeichnung:','Schadensstelle');
+    if(typ)setzeTZ(e.latlng.lat,e.latlng.lng,typ);
+  });
+  // Overpass: Krankenhäuser
+  fetchOverpass();
+}
+
+function mkIcon(emoji,color,size=30){
+  return L.divIcon({
+    html:`<div style="background:${color};border:2px solid rgba(255,255,255,.5);border-radius:3px;width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center;font-size:${size*.42}px;box-shadow:0 2px 10px rgba(0,0,0,.8)">${emoji}</div>`,
+    iconSize:[size,size],iconAnchor:[size/2,size/2],className:''
+  });
+}
+
+async function loadKartenZeichen(){
+  try{
+    const r=await apiFetch(`/api/einsaetze/${einsatzId}/karte`);
+    if(r.ok){const data=await r.json();data.forEach(kz=>addMapMarker(kz))}
+  }catch(e){}
+}
+
+function addMapMarker(kz){
+  if(!mapObj)return;
+  const mk=L.marker([kz.lat,kz.lng],{icon:mkIcon(kz.emoji||'📍',kz.farbe||'#C8000A')}).addTo(mapObj);
+  mk._kzId=kz.id;
+  mk.bindPopup(`<b style="color:#111">${kz.tz_typ||'–'}</b><br/>${kz.beschreibung||''}<br/><small>${kz.erstellt_von||''} · ${kz.zeit||''}</small>`);
+  mapMarkers.push(mk);
+}
+
+function removeMapMarker(id){
+  const idx=mapMarkers.findIndex(m=>m._kzId===id);
+  if(idx>=0){mapMarkers[idx].remove();mapMarkers.splice(idx,1)}
+}
+
+async function setzeTZ(lat,lng,typ){
+  try{
+    await apiFetch(`/api/einsaetze/${einsatzId}/karte`,{
+      method:'POST',
+      body:JSON.stringify({tz_typ:typ,lat,lng,emoji:'📍',farbe:'#C8000A',beschreibung:typ})
+    });
+  }catch(e){}
+}
+
+async function fetchOverpass(){
+  const q=`[out:json][timeout:12];(node["amenity"="hospital"](48.1,7.5,48.8,8.5);way["amenity"="hospital"](48.1,7.5,48.8,8.5););out center;`;
+  try{
+    const r=await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(q));
+    const data=await r.json();
+    data.elements.forEach(el=>{
+      const lat=el.lat||(el.center?.lat),lon=el.lon||(el.center?.lon);
+      if(!lat||!lon)return;
+      L.marker([lat,lon],{icon:mkIcon('🏥','#1A5FA8',22)}).addTo(mapObj)
+        .bindPopup(`<b style="color:#111">🏥 ${el.tags?.name||'Krankenhaus'}</b><br/><small>Overpass API</small>`);
+    });
+  }catch(e){}
+}
+
+// ══════════════════════════════════════════════
+// KI-ANALYSE
+// ══════════════════════════════════════════════
+function gf(id){return(document.getElementById(id)||{}).value||''}
+function getSelTZ(){return[...document.querySelectorAll('.tzc.sel')].map(c=>c.dataset.v).join(', ')}
+function getOuts(){return[...document.querySelectorAll('input[name="out"]:checked')].map(c=>c.value)}
+
+function setStatus(msg,cls=''){
+  const el=document.getElementById('ai-status');
+  el.className='';if(cls)el.classList.add(cls);el.innerHTML=msg;
+}
+
+async function runAnalysis(){
+  const sl=gf('f-sl'),ort=gf('f-ort');
+  if(!sl&&!ort){setStatus('⚠ Bitte Einsatzort und Schadenslage eingeben.','error');return}
+
+  document.getElementById('btn-sub').disabled=true;
+  setStatus('<span class="spin"></span> KI analysiert … bitte warten','thinking');
+
+  const payload={
+    stichwort:gf('f-stw'),einsatzort:ort,lagestufe:gf('f-lsuf'),
+    taktischeZeichen:getSelTZ(),schadenslage:sl,gefahrenlage:gf('f-gl'),
+    tote:gf('f-tote'),verletzte:gf('f-verl'),verschuettete:gf('f-versch'),obdachlose:gf('f-obdach'),
+    kraefte:gf('f-krf'),geoLage:gf('f-geo'),koordinaten:gf('f-koor'),
+    temperatur:gf('f-wetter'),outputs:getOuts(),hinweise:gf('f-hint'),
+  };
+
+  // Zahlen sofort im Dashboard updaten
+  updateZahlen({tote:payload.tote,versch:payload.verschuettete,verl:payload.verletzte,obdach:payload.obdachlose});
+
+  // Schadenslage direkt zeigen
+  document.getElementById('d-schaden').textContent=
+    `${payload.taktischeZeichen||'–'}\n\n${payload.schadenslage}\n\n${payload.gefahrenlage||''}`;
+  document.getElementById('d-schaden').style.fontStyle='normal';
+  document.getElementById('d-lsuf').textContent=payload.lagestufe;
+
+  try{
+    const r=await apiFetch(`/api/einsaetze/${einsatzId}/ki/analyse`,{method:'POST',body:JSON.stringify(payload)});
+    if(r.ok){
+      const d=await r.json();
+      handleKIResult(d);
+      setStatus(`✅ Analyse abgeschlossen · ${new Date().toLocaleTimeString('de-DE')}`, 'done');
+    }else{
+      setStatus('⛔ API-Fehler beim KI-Aufruf','error');
+    }
+  }catch(e){
+    setStatus(`⛔ ${e.message}`,'error');
+  }
+  document.getElementById('btn-sub').disabled=false;
+}
+
+function handleKIResult(d){
+  const now=new Date().toLocaleString('de-DE');
+
+  // Lagebeschreibung
+  const lage=d.lagebeschreibung||d.raw||'–';
+  document.getElementById('d-lage').textContent=lage;
+  document.getElementById('d-lage').style.fontStyle='normal';
+  document.getElementById('d-lage').style.color='';
+  document.getElementById('d-stand').textContent='Stand '+now;
+
+  // Kräfte
+  buildKraefteView(d);
+
+  // Extra-Outputs
+  const extras=[];
+  ['kurzlage','management_summary','pressemitteilung','buergerinformation','offene_punkte'].forEach(k=>{
+    if(d[k])extras.push(`=== ${k.toUpperCase().replace('_',' ')} ===\n${d[k]}`);
+  });
+  if(extras.length){
+    document.getElementById('d-extra').textContent=extras.join('\n\n');
+    document.getElementById('extra-card').style.display='block';
+  }
+
+  // Geodaten auf Karte
+  if(d.geodaten?.length)d.geodaten.forEach(g=>addMapMarker({...g,id:Date.now()+Math.random()}));
+
+  // Beamer
+  document.getElementById('bm-sub').textContent=`S2-LageLive · Stand ${now}`;
+  document.getElementById('bm-ticker').textContent=lage.substring(0,200)+'…';
+
+  // Ticker
+  updateTicker(`KI-Analyse ${now}: ${lage.substring(0,120)}`);
+
+  // Kräfte-Stand
+  document.getElementById('krf-stand').textContent='Stand '+now;
+}
+
+function buildKraefteView(d){
+  const krf=d.kraefte||'';
+  if(!krf){return}
+  const el=document.getElementById('d-kraefte');
+  const lines=krf.split('\n').filter(l=>l.trim());
+  if(!lines.length)return;
+  el.innerHTML=lines.map(l=>{
+    const p=l.split('·').map(x=>x.trim());
+    const org=p[0]||'–',name=p[1]||org,func=p[2]||'–',sta=p[3]||'–';
+    let cls='ext';
+    if(/fw|feuerwehr/i.test(org))cls='fw';
+    else if(/rd|rettung|drk|juh|mhd/i.test(org))cls='rd';
+    else if(/thw/i.test(org))cls='thw';
+    return `<div class="kf-card ${cls}">
+      <div class="kf-org">${{fw:'🔴 Feuerwehr',rd:'🟢 RD/HiOrg',thw:'🔵 THW',ext:'🟠 Extern'}[cls]}</div>
+      <div class="kf-name">${name}</div><div class="kf-func">${func}</div>
+      <div class="kf-meta"><span class="ks g">👥 ${sta}</span><span class="ks y">Im Einsatz</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// TIMELINE
+// ══════════════════════════════════════════════
+function addTimelineEntry(e){
+  timeline.unshift(e);
+  const el=document.getElementById('d-timeline');
+  const tagCls=({Lage:'t-e',Maßnahme:'t-s',Meldung:'t-m',Vordruck:'t-m'}[e.kategorie])||'t-m';
+  el.innerHTML=timeline.slice(0,20).map((t,i)=>`
+    <div class="te ${i===0?'new':''}">
+      <div class="te-t">${t.zeit||'–'}</div>
+      <div class="te-b">
+        <span class="tag ${tagCls}">${(t.kategorie||'Meldung').toUpperCase()}</span>
+        <p>${t.betreff||t.inhalt?.substring(0,120)||'–'}</p>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════
+// TICKER + TOASTS
+// ══════════════════════════════════════════════
+function updateTicker(msg){
+  document.getElementById('ticker-txt').textContent=`⚠ ${msg} · S2-LageLive · FwDV 102`;
+}
+
+function showToast(title,body,crit=false){
+  const el=document.createElement('div');
+  el.className='toast'+(crit?' crit':'');
+  el.innerHTML=`<div class="toast-title">${title}</div><div class="toast-body">${body}</div>`;
+  el.onclick=()=>el.remove();
+  document.getElementById('toast-area').appendChild(el);
+  setTimeout(()=>{if(el.parentNode)el.remove()},5000);
+}
+
+// ══════════════════════════════════════════════
+// PANELS
+// ══════════════════════════════════════════════
+function showPanel(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tbt').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='karte')setTimeout(()=>{if(mapObj)mapObj.invalidateSize()},100);
+  if(id==='tagebuch')loadTagebuch();
+}
+
+// ══════════════════════════════════════════════
+// ÜBUNG ORTENAU LADEN
+// ══════════════════════════════════════════════
+function loadOrtenau(){
+  document.getElementById('f-stw').value='KAT – Katastrophe';
+  document.getElementById('f-lsuf').value='MANV / Katastrophe';
+  document.getElementById('f-ort').value='Ortenaukreis gesamt (51 Gemeinden) · Schwerpunkt Offenburg / Kehl / Rheinau';
+  document.getElementById('f-el').value='Landrat Ortenaukreis';
+  document.getElementById('f-sl').value='Erdbeben Stärke 6,8 Richterskala, 01.10.XX 04:00 Uhr. Epizentrum 18km SW Straßburg. Alle 51 Gemeinden betroffen. Ca. 650 Gebäude teileingestürzt, ca. 300 Totalzusammenbrüche. Dammbruch Staustufe Gambsheim: 830m³/s Ausfluss, Rheinau und Freistätt überflutet.';
+  document.getElementById('f-gl').value='Stromausfall gesamter Ortenaukreis (400kV/240kV). A5 Achern–Herbolzheim blockiert. B3, B28, B294, B500 gesperrt. Harmersbachtal ohne Außenverbindung. Lage: eskalierend.';
+  document.getElementById('f-tote').value='300';
+  document.getElementById('f-verl').value='5000';
+  document.getElementById('f-versch').value='500';
+  document.getElementById('f-obdach').value='70000';
+  document.getElementById('f-krf').value='FW · FF Offenburg · Bergung A1 · 120 Mann\nRD · RD Ortenaukreis · BHP Patientenversorgung · 80 Mann\nTHW · THW OV Offenburg · Bergung TH · 45 Mann\nRD · DRK Ortenau · SEG Sanität · 120 Mann';
+  document.getElementById('f-geo').value='A5 Achern–Herbolzheim gesperrt. Überflutung Rheinau/Freistätt. Harmersbachtal abgeschnitten. BSR Nord: Achern. BSR Süd: Offenburg-Nord.';
+  document.getElementById('f-koor').value='48.473°N, 7.941°E';
+  document.getElementById('f-wetter').value='+18°C · 15km/h Süd · wolkenlos';
+  document.querySelectorAll('.tzc').forEach(c=>{
+    if(['Erdbeben','Bauwerksschaden/Einsturz','Hochwasser/Überflutung','Dammbruch','Stromausfall/KRITIS','MANV'].includes(c.dataset.v))c.classList.add('sel');
+  });
+  document.querySelectorAll('input[name="out"]').forEach(cb=>cb.checked=true);
+  setStatus('✅ Übung Ortenau geladen · Bereit zur KI-Analyse','done');
+  showToast('📂 Übungsdaten geladen','Ortenau-Szenario bereit');
+}
+
+// ══════════════════════════════════════════════
+// AUTO-LOGIN wenn Token vorhanden
+// ══════════════════════════════════════════════
+if(token&&userInfo.username){
+  // Token prüfen
+  fetch(`${BASE}/api/einsaetze`,{headers:{'Authorization':'Bearer '+token}})
+    .then(r=>{if(r.ok)startApp();else{localStorage.removeItem('s2_token')}})
+    .catch(()=>{});
+}
+</script>
+</body>
+</html>
