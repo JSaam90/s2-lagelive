@@ -13,7 +13,7 @@
   --yellow:#FFD100;--yd:#B89500;
   --green:#1A8A3C;--gl:#22B84E;
   --blue:#1A5FA8;--bl:#2B7FD4;--orange:#E07B00;
-  --bg:#0C0F12;--p1:#141820;--p2:#1C2330;--p3:#242D3C;--p4:#2C3848;
+  --bg:#0C0F12;--p1:#141820;--p2:#1C2330;--p3:#242D3C;
   --bd:#28354A;--bdh:#384A60;
   --t0:#FFF;--t1:#C0D0E0;--t2:#607080;--t3:#384858;
   --fh:'Bebas Neue',sans-serif;--fm:'IBM Plex Mono',monospace;--fb:'IBM Plex Sans',sans-serif;
@@ -21,7 +21,6 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);color:var(--t1);overflow:hidden}
 
-/* ── LOGIN ── */
 #ls{display:flex;align-items:center;justify-content:center;height:100vh}
 .lb{background:var(--p1);border:1px solid var(--bd);border-top:3px solid var(--red);border-radius:6px;padding:32px;width:340px}
 .lb h1{font-family:var(--fh);font-size:2rem;letter-spacing:5px;color:var(--t0);text-align:center;margin-bottom:4px}
@@ -35,7 +34,6 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
 #lerr{font-family:var(--fm);font-size:.65rem;color:#ff6060;text-align:center;min-height:16px;margin-bottom:3px}
 .lhint{font-family:var(--fm);font-size:.57rem;color:var(--t3);text-align:center;line-height:1.9;margin-top:12px;padding-top:10px;border-top:1px solid var(--bd)}
 
-/* ── APP LAYOUT ── */
 #app{display:none;flex-direction:column;height:100vh}
 #topbar{flex-shrink:0;background:linear-gradient(90deg,#0d0002,var(--p1));border-bottom:1px solid var(--bd);display:flex;align-items:stretch;min-height:50px}
 .as{width:5px;background:repeating-linear-gradient(180deg,var(--red) 0,var(--red) 8px,var(--yellow) 8px,var(--yellow) 16px);flex-shrink:0;animation:as .5s linear infinite}
@@ -60,21 +58,43 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
 .panel{display:none;height:100%;flex-direction:column;overflow:hidden}
 .panel.active{display:flex}
 
-/* ── KARTE ── */
+/* KARTE */
 #p-karte{position:relative}
 #map{height:100%;width:100%}
-.leaflet-tile{filter:grayscale(.4) brightness(.75)}
+.leaflet-tile{filter:grayscale(.35) brightness(.78)}
 .leaflet-control-zoom a{background:var(--p2)!important;color:var(--t1)!important;border-color:var(--bd)!important}
-.map-toolbar{position:absolute;top:10px;right:10px;z-index:1000;display:flex;flex-direction:column;gap:6px}
-.map-btn{background:var(--p1);border:1px solid var(--bd);border-radius:4px;padding:6px 10px;font-family:var(--fm);font-size:.63rem;color:var(--t1);cursor:pointer;white-space:nowrap}
-.map-btn:hover{background:var(--p2);border-color:var(--bdh)}
-.map-btn.active{background:var(--red);border-color:var(--red);color:#fff}
-.map-legend{position:absolute;bottom:30px;left:10px;z-index:1000;background:rgba(12,15,18,.92);border:1px solid var(--bd);border-radius:4px;padding:8px 10px;font-family:var(--fm);font-size:.6rem;color:var(--t1)}
-.map-legend div{display:flex;align-items:center;gap:6px;margin-bottom:3px}
-.map-legend .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-#map-lage-stand{position:absolute;bottom:10px;right:10px;z-index:1000;background:rgba(12,15,18,.9);border:1px solid var(--red);border-radius:3px;padding:4px 8px;font-family:var(--fm);font-size:.58rem;color:var(--rl)}
 
-/* ── LAGEBILD ── */
+/* LAYER PANEL — linke Seite */
+#layer-panel{position:absolute;top:10px;left:10px;z-index:1000;width:210px;background:rgba(12,15,18,.95);border:1px solid var(--bd);border-radius:6px;overflow:hidden}
+#layer-header{background:var(--p2);border-bottom:1px solid var(--bd);padding:7px 10px;display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
+#layer-header span{font-family:var(--fh);font-size:.78rem;letter-spacing:3px;color:var(--t0);flex:1}
+#layer-header .arrow{font-size:.7rem;color:var(--t2);transition:transform .2s}
+#layer-header.open .arrow{transform:rotate(180deg)}
+#layer-body{display:none;padding:6px 4px}
+#layer-body.open{display:block}
+.layer-group{margin-bottom:4px}
+.layer-group-title{font-family:var(--fm);font-size:.52rem;letter-spacing:2px;color:var(--yd);text-transform:uppercase;padding:3px 8px;margin-bottom:2px}
+.layer-btn{display:flex;align-items:center;gap:7px;width:100%;padding:5px 8px;border:none;background:none;color:var(--t2);font-family:var(--fm);font-size:.63rem;cursor:pointer;border-radius:3px;text-align:left;transition:background .12s}
+.layer-btn:hover{background:var(--p3);color:var(--t1)}
+.layer-btn.on{color:var(--t0)}
+.layer-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,.3)}
+.layer-count{margin-left:auto;font-size:.52rem;color:var(--t3)}
+.layer-spinner{width:9px;height:9px;border:1.5px solid rgba(255,209,0,.2);border-top-color:var(--yellow);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* MAP TOOLBAR — rechte Seite */
+.map-toolbar{position:absolute;top:10px;right:10px;z-index:1000;display:flex;flex-direction:column;gap:5px}
+.map-btn{background:rgba(12,15,18,.92);border:1px solid var(--bd);border-radius:4px;padding:6px 10px;font-family:var(--fm);font-size:.62rem;color:var(--t1);cursor:pointer;white-space:nowrap;transition:all .15s}
+.map-btn:hover{background:var(--p2);border-color:var(--bdh)}
+.map-btn.active-mode{background:var(--red);border-color:var(--red);color:#fff;animation:pulse .8s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(200,0,10,.4)}50%{box-shadow:0 0 0 5px rgba(200,0,10,0)}}
+
+/* STATUS BAR unten */
+#map-status{position:absolute;bottom:8px;right:8px;z-index:1000;background:rgba(12,15,18,.9);border:1px solid var(--bd);border-radius:3px;padding:4px 8px;font-family:var(--fm);font-size:.58rem;color:var(--t2);display:flex;align-items:center;gap:8px}
+#map-status .dot-live{width:6px;height:6px;border-radius:50%;background:var(--gl);animation:ld 1.3s ease-in-out infinite;display:inline-block}
+#map-coords{position:absolute;bottom:8px;left:220px;z-index:1000;background:rgba(12,15,18,.9);border:1px solid var(--bd);border-radius:3px;padding:4px 8px;font-family:var(--fm);font-size:.58rem;color:var(--t2)}
+
+/* LAGEBILD */
 #p-lage{overflow-y:auto}
 .nums{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--bd);flex-shrink:0}
 .num{background:var(--p2);padding:10px 6px;text-align:center}
@@ -95,7 +115,7 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
 .cb{padding:10px;font-size:.8rem;line-height:1.65;white-space:pre-wrap;color:var(--t1)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-/* ── TAGEBUCH ── */
+/* TAGEBUCH */
 #p-tb{overflow-y:auto;display:flex;flex-direction:column}
 .tbtbar{flex-shrink:0;background:var(--p2);border-bottom:1px solid var(--bd);padding:7px 12px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .tbtbar select{background:var(--p3);border:1px solid var(--bd);border-radius:4px;color:var(--t1);font-family:var(--fm);font-size:.6rem;padding:4px 7px;outline:none}
@@ -114,7 +134,7 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
 .tbec .inh{font-size:.75rem;color:var(--t1);line-height:1.5;max-height:72px;overflow:hidden}
 .tbec .qu{font-family:var(--fm);font-size:.54rem;color:var(--t2);margin-top:4px}
 
-/* ── KRÄFTE ── */
+/* KRÄFTE */
 #p-krf{overflow-y:auto;display:flex;flex-direction:column}
 .krf-bar{flex-shrink:0;background:var(--p2);border-bottom:1px solid var(--bd);padding:7px 12px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .kfg{padding:10px 12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;overflow-y:auto;flex:1}
@@ -128,55 +148,40 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
 .ks{font-family:var(--fm);font-size:.55rem;padding:2px 6px;border-radius:3px;background:var(--p3)}
 .ks.g{background:#0A1A10;color:var(--gl)}.ks.y{background:#1A1500;color:var(--yellow)}.ks.b{background:#0A1020;color:var(--bl)}.ks.r{background:#200005;color:#ff8888}
 
-/* ── ABSCHNITTE / FÜHRUNGSBAUM ── */
+/* FÜHRUNG */
 #p-fuehrung{overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:12px}
 .fuehr-bar{background:var(--p2);border:1px solid var(--bd);border-radius:4px;padding:8px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0}
-.tree-container{background:var(--p1);border:1px solid var(--bd);border-radius:4px;padding:16px;overflow-x:auto}
-.tree-node{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:160px}
-.tree-card{background:var(--p3);border:1px solid var(--bd);border-radius:4px;padding:8px 12px;text-align:center;min-width:150px;cursor:pointer;transition:border-color .15s}
-.tree-card:hover{border-color:var(--bdh)}
-.tree-card.el{border-top:3px solid var(--red);background:var(--p2)}
-.tree-card .tc-nr{font-family:var(--fh);font-size:.85rem;letter-spacing:2px;color:var(--yellow)}
-.tree-card .tc-name{font-size:.78rem;color:var(--t0);font-weight:600;margin:2px 0}
-.tree-card .tc-al{font-family:var(--fm);font-size:.6rem;color:var(--t1)}
-.tree-card .tc-funk{font-family:var(--fm);font-size:.58rem;color:var(--gl)}
-.tree-card .tc-s{font-family:var(--fm);font-size:.55rem;color:var(--t2);margin-top:4px}
-.tree-children{display:flex;gap:16px;align-items:flex-start}
-.tree-line{width:1px;height:20px;background:var(--bd);margin:0 auto}
-.tree-h-line{border-top:1px solid var(--bd)}
 .abschn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px}
 .abschn-card{background:var(--p2);border:1px solid var(--bd);border-radius:4px;padding:10px 12px;border-left:3px solid var(--bl)}
 .abschn-card .ac-nr{font-family:var(--fh);font-size:.9rem;letter-spacing:2px;color:var(--yellow)}
 .abschn-card .ac-name{font-size:.82rem;color:var(--t0);font-weight:600;margin:2px 0}
 .abschn-card .ac-al{font-size:.73rem;color:var(--t1);margin-bottom:4px}
 .abschn-card .ac-meta{font-family:var(--fm);font-size:.58rem;color:var(--t2)}
-.status-badge{font-family:var(--fm);font-size:.52rem;padding:1px 6px;border-radius:3px;display:inline-block}
+.sb{font-family:var(--fm);font-size:.52rem;padding:1px 6px;border-radius:3px;display:inline-block}
 .sb-aktiv{background:#0A1A10;color:var(--gl);border:1px solid var(--green)}
 .sb-wartend{background:#1A1500;color:var(--yellow);border:1px solid var(--yd)}
 .sb-abg{background:var(--p3);color:var(--t2);border:1px solid var(--bd)}
 
-/* ── LAGEVORTRAG ── */
+/* LAGEVORTRAG */
 #p-lv{overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:12px}
 .lv-bar{background:var(--p2);border:1px solid var(--bd);border-radius:4px;padding:8px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .lv-card{background:var(--p1);border:1px solid var(--bd);border-radius:4px;overflow:hidden}
 .lv-head{background:var(--p2);border-bottom:1px solid var(--bd);padding:8px 12px;display:flex;align-items:center;gap:8px}
-.lv-head .rev{font-family:var(--fh);font-size:1rem;letter-spacing:3px;color:var(--yellow)}
-.lv-head .dt{font-family:var(--fm);font-size:.6rem;color:var(--t2)}
 .lv-body{padding:12px;font-family:var(--fm);font-size:.76rem;line-height:1.8;white-space:pre-wrap;color:var(--t1);max-height:400px;overflow-y:auto}
 .timer-box{background:var(--p2);border:1px solid var(--bd);border-radius:4px;padding:12px;display:flex;align-items:center;gap:12px}
 .timer-display{font-family:var(--fh);font-size:2.5rem;letter-spacing:6px;color:var(--yellow);min-width:100px}
 .timer-display.warn{color:var(--orange);animation:np 1s ease-in-out infinite}
 .timer-display.ring{color:var(--red);animation:np .5s ease-in-out infinite}
 
-/* ── MELDUNGEN ── */
+/* MELDUNGEN */
 #p-ml{overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:12px}
 .ml-bar{background:var(--p2);border:1px solid var(--bd);border-radius:4px;padding:8px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .ml-card{background:var(--p1);border:1px solid var(--bd);border-radius:4px;overflow:hidden;border-left:3px solid var(--bl)}
-.ml-card.versendet{border-left-color:var(--gl);opacity:.7}
-.ml-head{background:var(--p2);border-bottom:1px solid var(--bd);padding:6px 12px;display:flex;align-items:center;gap:8px;font-family:var(--fm);font-size:.6rem;color:var(--t2)}
+.ml-card.versendet{border-left-color:var(--green);opacity:.7}
+.ml-head{background:var(--p2);border-bottom:1px solid var(--bd);padding:6px 12px;display:flex;align-items:center;gap:8px;font-family:var(--fm);font-size:.6rem;color:var(--t2);flex-wrap:wrap}
 .ml-body{padding:10px 12px;font-size:.78rem;color:var(--t1);white-space:pre-wrap;max-height:200px;overflow-y:auto}
 
-/* ── EINGABE ── */
+/* EINGABE */
 #p-ein{overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
 .fsec-l{font-family:var(--fm);font-size:.56rem;letter-spacing:2.5px;color:var(--yd);text-transform:uppercase;padding:4px 0;border-bottom:1px solid var(--bd);margin-bottom:7px}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px}
@@ -184,7 +189,7 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
 .field{display:flex;flex-direction:column;gap:3px}
 .field label{font-family:var(--fm);font-size:.56rem;letter-spacing:1.5px;color:var(--t2);text-transform:uppercase}
 .field input,.field select,.field textarea{background:var(--p3);border:1px solid var(--bd);border-radius:4px;color:var(--t0);font-family:var(--fb);font-size:.84rem;padding:7px 9px;outline:none;width:100%;resize:vertical}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--red);box-shadow:0 0 0 2px rgba(200,0,10,.12)}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--red)}
 .field textarea{min-height:70px}.field select option{background:var(--p3)}
 .tzc2{display:flex;flex-wrap:wrap;gap:4px}
 .tzp{display:flex;align-items:center;gap:3px;padding:3px 8px;border:1px solid var(--bd);border-radius:10px;background:var(--p3);cursor:pointer;font-size:.62rem;color:var(--t2);transition:all .12s;user-select:none}
@@ -197,13 +202,12 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
 #ais.done{border-color:var(--gl);color:var(--gl)}
 #ais.error{border-color:var(--red);color:#ff8888}
 .sp{display:inline-block;width:10px;height:10px;border:2px solid rgba(255,209,0,.3);border-top-color:var(--yellow);border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
 .btn-submit{font-family:var(--fh);font-size:1rem;letter-spacing:3px;background:var(--red);color:#fff;border:none;border-radius:4px;padding:10px;cursor:pointer;width:100%;border-bottom:2px solid var(--rd)}
 .btn-submit:hover{background:var(--rl)}.btn-submit:disabled{background:#3A1A1A;color:#555;cursor:not-allowed}
 .btn-load{font-family:var(--fm);font-size:.6rem;letter-spacing:1px;padding:7px;border-radius:4px;cursor:pointer;background:var(--p3);border:1px solid var(--bd);color:var(--t2);width:100%}
 .btn-load:hover{color:var(--t0);border-color:var(--bdh)}
 
-/* ── BEAMER ── */
+/* BEAMER */
 #p-bm{overflow-y:auto;background:#000;padding:20px}
 .bmt{font-family:var(--fh);font-size:3rem;letter-spacing:8px;color:#fff;text-align:center;margin-bottom:4px}
 .bms{font-family:var(--fm);font-size:.75rem;color:var(--yellow);text-align:center;letter-spacing:3px;margin-bottom:20px}
@@ -214,7 +218,7 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
 .bmni.cr .n{color:#ff4444}.bmni.wr .n{color:var(--yellow)}.bmni.ok .n{color:var(--gl)}
 .bmtk{background:#111;border:1px solid #333;border-radius:4px;padding:12px;overflow:hidden;white-space:nowrap;font-family:var(--fm);font-size:.75rem;color:#aaa}
 
-/* ── MODAL ── */
+/* MODAL */
 #mb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.87);z-index:500;align-items:center;justify-content:center;padding:16px}
 #mb.vis{display:flex}
 .modal{background:var(--p1);border:1px solid var(--yellow);border-radius:6px;max-width:640px;width:100%;max-height:90vh;overflow-y:auto}
@@ -234,17 +238,15 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
 .btn-cx{font-family:var(--fb);font-size:.78rem;color:var(--t2);background:none;border:1px solid var(--bd);border-radius:4px;padding:7px 13px;cursor:pointer}
 .cls{margin-left:auto;background:none;border:1px solid var(--bd);color:var(--t2);border-radius:3px;padding:3px 8px;cursor:pointer;font-family:var(--fm);font-size:.6rem}
 
-/* ── TOASTS ── */
 #toa{position:fixed;bottom:16px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:6px;max-width:320px}
 .toast{background:var(--p1);border:1px solid var(--bd);border-left:4px solid var(--bl);border-radius:4px;padding:9px 12px;animation:tin .3s ease;cursor:pointer}
-.toast.crit{border-left-color:var(--red)}.toast.ok{border-left-color:var(--gl)}.toast.warn{border-left-color:var(--orange)}
+.toast.crit{border-left-color:var(--red)}.toast.ok{border-left-color:var(--gl)}
 @keyframes tin{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
 .ttt{font-weight:700;color:var(--t0);font-size:.78rem;margin-bottom:2px}
 .ttb{color:var(--t1);font-size:.72rem;line-height:1.4}
 
-/* ── UPLOAD AREA ── */
 .upload-area{border:2px dashed var(--bd);border-radius:6px;padding:16px;text-align:center;cursor:pointer;transition:border-color .2s;position:relative}
-.upload-area:hover,.upload-area.drag{border-color:var(--red);background:rgba(200,0,10,.04)}
+.upload-area:hover,.upload-area.drag{border-color:var(--red)}
 .upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 .upload-area p{font-family:var(--fm);font-size:.62rem;color:var(--t2)}
 #upl-list{margin-top:7px;font-family:var(--fm);font-size:.62rem;color:var(--gl);text-align:left}
@@ -254,11 +256,10 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="ls">
   <div class="lb">
     <h1>S2-LageLive</h1>
-    <div class="sub">FwDV 102 / DV 100 · v4.0</div>
+    <div class="sub">FwDV 102 / DV 100 · v4</div>
     <div class="lf"><label>Benutzername</label><input id="lu" type="text" placeholder="z. B. s2" autocomplete="username"/></div>
     <div class="lf"><label>Passwort</label><input id="lp" type="password" placeholder="Passwort" autocomplete="current-password"/></div>
     <div id="lerr"></div>
@@ -267,7 +268,6 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
   </div>
 </div>
 
-<!-- APP -->
 <div id="app">
   <div id="topbar">
     <div class="as"></div>
@@ -290,7 +290,7 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
       <button class="logout" onclick="doLogout()">Ab</button>
     </div>
   </div>
-  <div id="ticker"><span id="ttxt">⚠ S2-LageLive v4.0 · FwDV 102 / DV 100 · Bereit</span></div>
+  <div id="ticker"><span id="ttxt">⚠ S2-LageLive v4 · FwDV 102 / DV 100 · Bereit</span></div>
 
   <div id="content">
 
@@ -308,7 +308,7 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
         <div class="grid2">
           <div class="card">
             <div class="ch"><h4>Einsatz</h4><span class="stag wr-tag" id="d-lsuf">–</span><span class="cts" id="d-stand">–</span></div>
-            <div class="cb" id="d-einsatz-info" style="color:var(--t2)">Noch kein Einsatz angelegt.</div>
+            <div class="cb" id="d-einsatz-info" style="color:var(--t2)">Noch kein Einsatz. Tab „Eingabe" → Einsatz anlegen.</div>
           </div>
           <div class="card">
             <div class="ch"><h4>Führung</h4></div>
@@ -317,7 +317,7 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
         </div>
         <div class="card">
           <div class="ch"><h4>Aktuelle Lagebeschreibung</h4><button class="cts btn-sm" onclick="copyText('d-lage')">📋</button></div>
-          <div class="cb" id="d-lage" style="color:var(--t2);font-style:italic">Noch keine KI-Analyse.</div>
+          <div class="cb" id="d-lage" style="color:var(--t2);font-style:italic">Noch keine KI-Analyse. Tab „Eingabe" → Analyse starten.</div>
         </div>
         <div class="card" id="d-extra-card" style="display:none">
           <div class="ch"><h4>Weitere KI-Ausgaben</h4><button class="cts btn-sm" onclick="copyText('d-extra')">📋</button></div>
@@ -333,42 +333,153 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
     <!-- LAGEKARTE -->
     <div class="panel" id="p-karte">
       <div id="map"></div>
+
+      <!-- Layer Panel links -->
+      <div id="layer-panel">
+        <div id="layer-header" class="open" onclick="toggleLayerPanel()">
+          <span>LAYER</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div id="layer-body" class="open">
+
+          <div class="layer-group">
+            <div class="layer-group-title">Einsatz</div>
+            <button class="layer-btn on" id="lbtn-schadensstellen" onclick="toggleLayer('schadensstellen')">
+              <span class="layer-dot" style="background:#C8000A"></span>Schadensstellen
+              <span class="layer-count" id="lcount-schadensstellen">0</span>
+            </button>
+            <button class="layer-btn on" id="lbtn-kraefte" onclick="toggleLayer('kraefte')">
+              <span class="layer-dot" style="background:#E07B00"></span>Kräfte
+              <span class="layer-count" id="lcount-kraefte">0</span>
+            </button>
+            <button class="layer-btn on" id="lbtn-bereiche" onclick="toggleLayer('bereiche')">
+              <span class="layer-dot" style="background:#1A5FA8"></span>Betr. Bereiche
+              <span class="layer-count" id="lcount-bereiche">0</span>
+            </button>
+            <button class="layer-btn on" id="lbtn-abschnitte" onclick="toggleLayer('abschnitte')">
+              <span class="layer-dot" style="background:#FFD100"></span>Abschnitte
+              <span class="layer-count" id="lcount-abschnitte">0</span>
+            </button>
+          </div>
+
+          <div class="layer-group">
+            <div class="layer-group-title">Medizin</div>
+            <button class="layer-btn" id="lbtn-krankenhaus" onclick="toggleLayer('krankenhaus')">
+              <span id="lspin-krankenhaus" style="display:none" class="layer-spinner"></span>
+              <span class="layer-dot" style="background:#1A5FA8;display:none" id="ldot-krankenhaus"></span>
+              Krankenhäuser
+              <span class="layer-count" id="lcount-krankenhaus">–</span>
+            </button>
+            <button class="layer-btn" id="lbtn-arztpraxis" onclick="toggleLayer('arztpraxis')">
+              <span id="lspin-arztpraxis" style="display:none" class="layer-spinner"></span>
+              <span class="layer-dot" style="background:#2B7FD4;display:none" id="ldot-arztpraxis"></span>
+              Arztpraxen
+              <span class="layer-count" id="lcount-arztpraxis">–</span>
+            </button>
+            <button class="layer-btn" id="lbtn-apotheke" onclick="toggleLayer('apotheke')">
+              <span class="layer-dot" style="background:#1A8A3C"></span>Apotheken
+              <span class="layer-count" id="lcount-apotheke">–</span>
+            </button>
+          </div>
+
+          <div class="layer-group">
+            <div class="layer-group-title">Einsatzkräfte</div>
+            <button class="layer-btn" id="lbtn-feuerwache" onclick="toggleLayer('feuerwache')">
+              <span class="layer-dot" style="background:#C8000A"></span>Feuerwachen
+              <span class="layer-count" id="lcount-feuerwache">–</span>
+            </button>
+            <button class="layer-btn" id="lbtn-rettungswache" onclick="toggleLayer('rettungswache')">
+              <span class="layer-dot" style="background:#22B84E"></span>Rettungswachen
+              <span class="layer-count" id="lcount-rettungswache">–</span>
+            </button>
+            <button class="layer-btn" id="lbtn-polizei" onclick="toggleLayer('polizei')">
+              <span class="layer-dot" style="background:#1A5FA8"></span>Polizei
+              <span class="layer-count" id="lcount-polizei">–</span>
+            </button>
+          </div>
+
+          <div class="layer-group">
+            <div class="layer-group-title">Sammelstellen</div>
+            <button class="layer-btn" id="lbtn-schule" onclick="toggleLayer('schule')">
+              <span class="layer-dot" style="background:#1A8A3C"></span>Schulen
+              <span class="layer-count" id="lcount-schule">–</span>
+            </button>
+            <button class="layer-btn" id="lbtn-sammelstelle" onclick="toggleLayer('sammelstelle')">
+              <span class="layer-dot" style="background:#E07B00"></span>Sammelstellen
+              <span class="layer-count" id="lcount-sammelstelle">–</span>
+            </button>
+            <button class="layer-btn" id="lbtn-unterkunft" onclick="toggleLayer('unterkunft')">
+              <span class="layer-dot" style="background:#607080"></span>Unterkünfte
+              <span class="layer-count" id="lcount-unterkunft">–</span>
+            </button>
+          </div>
+
+          <div class="layer-group">
+            <div class="layer-group-title">Versorgung</div>
+            <button class="layer-btn" id="lbtn-tankstelle" onclick="toggleLayer('tankstelle')">
+              <span class="layer-dot" style="background:#B89500"></span>Tankstellen
+              <span class="layer-count" id="lcount-tankstelle">–</span>
+            </button>
+            <button class="layer-btn" id="lbtn-supermarkt" onclick="toggleLayer('supermarkt')">
+              <span class="layer-dot" style="background:#1A8A3C"></span>Supermärkte
+              <span class="layer-count" id="lcount-supermarkt">–</span>
+            </button>
+          </div>
+
+          <div class="layer-group">
+            <div class="layer-group-title">Infrastruktur</div>
+            <button class="layer-btn" id="lbtn-bruecke" onclick="toggleLayer('bruecke')">
+              <span class="layer-dot" style="background:#607080"></span>Brücken
+              <span class="layer-count" id="lcount-bruecke">–</span>
+            </button>
+            <button class="layer-btn" id="lbtn-strom" onclick="toggleLayer('strom')">
+              <span class="layer-dot" style="background:#FFD100"></span>Strom/KRITIS
+              <span class="layer-count" id="lcount-strom">–</span>
+            </button>
+            <button class="layer-btn" id="lbtn-wasserwerk" onclick="toggleLayer('wasserwerk')">
+              <span class="layer-dot" style="background:#1A5FA8"></span>Wasserwerke
+              <span class="layer-count" id="lcount-wasserwerk">–</span>
+            </button>
+          </div>
+
+          <div style="padding:4px 8px 6px">
+            <button class="layer-btn" style="background:var(--p3);border-radius:3px;width:100%;justify-content:center;color:var(--t2);font-size:.58rem" onclick="loadAllLayers()">
+              ⬇ Alle laden (aktueller Kartenausschnitt)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toolbar rechts -->
       <div class="map-toolbar">
-        <button class="map-btn" onclick="toggleLayer('infrastruktur')">🏥 KH/Wachen</button>
-        <button class="map-btn" onclick="toggleLayer('schulen')">🏫 Schulen</button>
-        <button class="map-btn" onclick="toggleLayer('kraefte')">🚒 Kräfte</button>
-        <button class="map-btn" onclick="toggleLayer('schadensstellen')">❌ Schäden</button>
-        <button class="map-btn" onclick="toggleLayer('bereiche')">🔷 Bereiche</button>
-        <button class="map-btn" id="btn-add-ss" onclick="startAddSS()">➕ Schadensstelle</button>
-        <button class="map-btn" id="btn-add-bereich" onclick="startAddBereich()">🔷 Bereich</button>
+        <button class="map-btn" id="btn-add-ss" onclick="startMapMode('add_ss')">➕ Schadensstelle</button>
+        <button class="map-btn" id="btn-add-bereich" onclick="startMapMode('add_bereich')">🔷 Bereich zeichnen</button>
+        <button class="map-btn" onclick="mapObj&&mapObj.locate({setView:true,maxZoom:14})">📍 Eigene Position</button>
+        <button class="map-btn" onclick="saveMapExtent()">💾 Kartenstand speichern</button>
       </div>
-      <div class="map-legend">
-        <div><span class="dot" style="background:#C8000A"></span>Schadensstelle kritisch</div>
-        <div><span class="dot" style="background:#E07B00"></span>Schadensstelle mittel</div>
-        <div><span class="dot" style="background:#22B84E"></span>Schadensstelle leicht</div>
-        <div><span class="dot" style="background:#C8000A"></span>Feuerwehr</div>
-        <div><span class="dot" style="background:#1A8A3C"></span>Rettungsdienst</div>
-        <div><span class="dot" style="background:#1A5FA8"></span>THW / Infrastruktur</div>
+
+      <div id="map-status">
+        <span class="dot-live"></span>
+        <span id="map-status-txt">Live</span>
       </div>
-      <div id="map-lage-stand">🔴 Karte live</div>
+      <div id="map-coords">–</div>
     </div>
 
-    <!-- FÜHRUNG / ABSCHNITTE -->
+    <!-- FÜHRUNG -->
     <div class="panel" id="p-fuehrung">
       <div class="fuehr-bar">
         <span style="font-family:var(--fh);font-size:1rem;letter-spacing:3px;color:var(--t0)">FÜHRUNGSSTRUKTUR</span>
         <button class="btn-sm red" onclick="openModal('abschnitt')">+ Abschnitt</button>
         <button class="btn-sm" onclick="loadFuehrung()">🔄 Laden</button>
-        <button class="btn-sm" onclick="sp('lv',document.querySelector('.ttab:nth-child(6)'))">→ Lagevortrag</button>
       </div>
       <div style="padding:12px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px">
         <div class="card">
           <div class="ch"><h4>Einsatzleitung</h4></div>
-          <div class="cb" style="padding:10px" id="fuehr-el-info">–</div>
+          <div class="cb" id="fuehr-el-info">–</div>
         </div>
         <div class="card">
-          <div class="ch"><h4>Abschnitte / Führungsbaum</h4></div>
-          <div class="cb" style="padding:10px"><div class="abschn-grid" id="abschn-list"><div style="color:var(--t2);font-style:italic">Noch keine Abschnitte. + Abschnitt klicken.</div></div></div>
+          <div class="ch"><h4>Abschnitte · Ansprechpartner</h4></div>
+          <div class="cb" style="padding:10px"><div class="abschn-grid" id="abschn-list"><div style="color:var(--t2);font-style:italic">Noch keine Abschnitte.</div></div></div>
         </div>
       </div>
     </div>
@@ -380,9 +491,9 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
         <span style="font-family:var(--fm);font-size:.6rem;color:var(--t2)">🔴 FW · 🟢 RD · 🔵 THW · 🟠 Extern</span>
         <button class="btn-sm red" onclick="openModal('kraft')">+ Einheit</button>
         <button class="btn-sm" onclick="loadKraefte()">🔄</button>
-        <span id="krf-gesamt" style="margin-left:auto;font-family:var(--fm);font-size:.6rem;color:var(--t1)">0 Einheiten · 0 Kräfte</span>
+        <span id="krf-gesamt" style="margin-left:auto;font-family:var(--fm);font-size:.6rem;color:var(--t1)">–</span>
       </div>
-      <div class="kfg" id="d-krf"><div style="color:var(--t2);font-style:italic;font-size:.8rem;padding:10px">Noch keine Kräfte eingetragen. „+ Einheit" klicken.</div></div>
+      <div class="kfg" id="d-krf"><div style="color:var(--t2);font-style:italic;font-size:.8rem;padding:10px">Noch keine Kräfte. „+ Einheit" klicken.</div></div>
     </div>
 
     <!-- TAGEBUCH -->
@@ -404,29 +515,29 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
       <div class="lv-bar">
         <span style="font-family:var(--fh);font-size:1rem;letter-spacing:3px;color:var(--t0)">LAGEVORTRAG</span>
         <button class="btn-sm red" onclick="genLagevortrag()">🤖 KI generieren</button>
-        <button class="btn-sm" onclick="loadLagevortraege()">🔄 Laden</button>
-        <button class="btn-sm" onclick="copyText('lv-inhalt')">📋 Kopieren</button>
+        <button class="btn-sm" onclick="loadLagevortraege()">🔄</button>
+        <button class="btn-sm" onclick="copyText('lv-inhalt')">📋</button>
         <div style="display:flex;align-items:center;gap:6px;margin-left:auto">
-          <span style="font-family:var(--fm);font-size:.6rem;color:var(--t2)">Intervall (Min):</span>
-          <input id="lv-intervall" type="number" value="60" min="0" max="480" style="background:var(--p3);border:1px solid var(--bd);border-radius:3px;color:var(--t0);width:56px;padding:3px 6px;font-family:var(--fm);font-size:.62rem;outline:none"/>
+          <span style="font-family:var(--fm);font-size:.6rem;color:var(--t2)">Intervall Min:</span>
+          <input id="lv-intervall" type="number" value="60" min="0" max="480" style="background:var(--p3);border:1px solid var(--bd);border-radius:3px;color:var(--t0);width:52px;padding:3px 6px;font-family:var(--fm);font-size:.62rem;outline:none"/>
         </div>
       </div>
       <div style="padding:12px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:12px">
-        <div class="timer-box" id="lv-timer-box">
+        <div class="timer-box">
           <div>
-            <div style="font-family:var(--fm);font-size:.6rem;color:var(--t2);margin-bottom:3px">Nächster Lagevortrag in</div>
+            <div style="font-family:var(--fm);font-size:.6rem;color:var(--t2);margin-bottom:3px">Nächster Lagevortrag</div>
             <div class="timer-display" id="lv-timer">––:––</div>
           </div>
-          <div style="flex:1">
+          <div style="flex:1;padding-left:12px">
             <div style="font-family:var(--fm);font-size:.6rem;color:var(--t2);margin-bottom:3px" id="lv-naechster-dt">–</div>
-            <div style="font-size:.78rem;color:var(--t1)" id="lv-info">Noch kein Lagevortrag generiert.</div>
+            <div style="font-size:.78rem;color:var(--t1)" id="lv-info">Noch kein Lagevortrag.</div>
           </div>
         </div>
         <div class="lv-card" id="lv-current" style="display:none">
           <div class="lv-head">
-            <span class="rev" id="lv-rev">Rev. 1</span>
+            <span style="font-family:var(--fh);font-size:1rem;letter-spacing:3px;color:var(--yellow)" id="lv-rev">Rev. 1</span>
             <span class="stag ok-tag" id="lv-status">ENTWURF</span>
-            <span class="dt" id="lv-dt">–</span>
+            <span style="font-family:var(--fm);font-size:.6rem;color:var(--t2)" id="lv-dt">–</span>
             <button class="btn-sm" style="margin-left:auto" onclick="freigebenLV()">✓ Freigeben</button>
           </div>
           <div class="lv-body" id="lv-inhalt">–</div>
@@ -459,7 +570,7 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
         </div>
         <div class="frow full"><div class="field"><label>Einsatzort *</label><input id="f-ort" type="text" placeholder="Straße, Ort, Gemeinde"/></div></div>
         <div class="frow">
-          <div class="field"><label>Führungsstelle</label><input id="f-fuehrstelle" type="text" placeholder="Adresse Führungsstelle"/></div>
+          <div class="field"><label>Führungsstelle</label><input id="f-fuehrstelle" type="text" placeholder="Adresse"/></div>
           <div class="field"><label>Koordinaten</label><input id="f-koor" type="text" placeholder="48.47°N, 7.94°E"/></div>
         </div>
       </div>
@@ -476,7 +587,7 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
         </div>
       </div>
       <div><div class="fsec-l">03 · Taktische Zeichen (FwDV 102)</div>
-        <div class="tzc2" id="tzc">
+        <div class="tzc2">
           <div class="tzp" data-v="Erdbeben" onclick="this.classList.toggle('sel')">🏚 Erdbeben</div>
           <div class="tzp" data-v="Brand/Feuer" onclick="this.classList.toggle('sel')">🔥 Brand</div>
           <div class="tzp" data-v="Hochwasser/Überflutung" onclick="this.classList.toggle('sel')">🌊 Hochwasser</div>
@@ -495,9 +606,9 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
         <div class="frow full"><div class="field"><label>Gefahrenlage</label><textarea id="f-gl" style="min-height:50px" placeholder="Ausbreitung, Gefahrenpotenzial …"></textarea></div></div>
       </div>
       <div><div class="fsec-l">05 · Kräfte &amp; Geo</div>
-        <div class="frow full"><div class="field"><label>Kräfte (Org · Einheit · Funktion · Stärke)</label><textarea id="f-krf" style="min-height:56px" placeholder="FW · FF Offenburg · Bergung · 120 Mann&#10;RD · Ortenau · BHP · 80 Mann"></textarea></div></div>
+        <div class="frow full"><div class="field"><label>Kräfte</label><textarea id="f-krf" style="min-height:56px" placeholder="FW · FF Offenburg · Bergung · 120 Mann&#10;RD · Ortenau · BHP · 80 Mann"></textarea></div></div>
         <div class="frow">
-          <div class="field"><label>Geo / Sperrungen</label><input id="f-geo" placeholder="A5 gesperrt, BSR Nord …"/></div>
+          <div class="field"><label>Geo / Sperrungen</label><input id="f-geo" placeholder="A5 gesperrt, BSR …"/></div>
           <div class="field"><label>Wetter</label><input id="f-wtr" placeholder="+18°C · 15km/h Süd"/></div>
         </div>
       </div>
@@ -520,7 +631,7 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
           <div id="upl-list"></div>
         </div>
       </div>
-      <div id="ais">💬 Bereit · Eingabe ausfüllen und Analyse starten</div>
+      <div id="ais">💬 Bereit</div>
       <button class="btn-submit" id="bsub" onclick="runAnalysis()">🚨 EINSATZ ANLEGEN + KI-ANALYSE STARTEN</button>
       <button class="btn-load" onclick="loadOrtenau()">📂 Übungsszenario Ortenau laden</button>
     </div>
@@ -544,9 +655,8 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
   </div>
 </div>
 
-<!-- MODAL -->
 <div id="mb">
-  <div class="modal" id="modal-inner">
+  <div class="modal">
     <div class="mh"><h3 id="modal-title">–</h3><button class="cls" onclick="closeModal()">✕</button></div>
     <div id="modal-body" class="mc"></div>
     <div class="mfoot" id="modal-foot"></div>
@@ -555,27 +665,45 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
 <div id="toa"></div>
 
 <script>
-// ══════════ CONFIG ══════════════════════════════════════════════
 const BASE=window.location.origin;
 const WSB=BASE.replace('https://','wss://').replace('http://','ws://');
 
-// ══════════ STATE ════════════════════════════════════════════════
 let token='',user={},eid=1,ws=null,mapObj=null;
-let tbData=[],tlData=[],kraefte=[],abschnitte=[],schadensstellen=[],bereiche=[];
-let updateCnt=0,krf_cnt=0,mapMarkers={},mapBereiche={};
-let lastInputs={},lvCurrent=null,lvTimer=null,lvNaechster=null;
-let mapMode=null; // 'add_ss'|'add_bereich'|null
-let layers={infrastruktur:true,schulen:false,kraefte:true,schadensstellen:true,bereiche:true};
-let overpassMarkers={infrastruktur:[],schulen:[]};
-let bereichPunkte=[];
+let tbData=[],tlData=[],kraefte=[],abschnitte=[],bereiche=[];
+let updateCnt=0,lastInputs={},lvCurrent=null,lvNaechster=null;
 
-// ══════════ UHRZEIT ══════════════════════════════════════════════
+// Layer-State
+const LAYER_STATE={};
+// Overpass-Marker: layerName -> L.LayerGroup
+const ovpLayers={};
+// Einsatz-Marker
+const einsatzLayers={schadensstellen:null,kraefte:null,bereiche:null,abschnitte:null};
+
+// Overpass-Konfiguration je Layer
+const OVP_CONFIG={
+  krankenhaus:{q:'node["amenity"="hospital"]',emoji:'🏥',color:'#1A5FA8',label:'Krankenhaus'},
+  arztpraxis:  {q:'node["amenity"="doctors"]',emoji:'⚕️',color:'#2B7FD4',label:'Arztpraxis'},
+  apotheke:    {q:'node["amenity"="pharmacy"]',emoji:'💊',color:'#1A8A3C',label:'Apotheke'},
+  feuerwache:  {q:'node["amenity"="fire_station"]',emoji:'🚒',color:'#C8000A',label:'Feuerwache'},
+  rettungswache:{q:'node["emergency"="ambulance_station"]',emoji:'🚑',color:'#22B84E',label:'Rettungswache'},
+  polizei:     {q:'node["amenity"="police"]',emoji:'👮',color:'#1A5FA8',label:'Polizei'},
+  schule:      {q:'node["amenity"="school"]',emoji:'🏫',color:'#1A8A3C',label:'Schule'},
+  sammelstelle:{q:'(node["emergency"="assembly_point"];node["amenity"="community_centre"];)',emoji:'🏛',color:'#E07B00',label:'Sammelstelle'},
+  unterkunft:  {q:'(node["tourism"="hostel"];node["amenity"="shelter"];)',emoji:'🏠',color:'#607080',label:'Unterkunft'},
+  tankstelle:  {q:'node["amenity"="fuel"]',emoji:'⛽',color:'#B89500',label:'Tankstelle'},
+  supermarkt:  {q:'node["shop"~"supermarket|convenience"]',emoji:'🛒',color:'#1A8A3C',label:'Supermarkt'},
+  bruecke:     {q:'way["bridge"="yes"]["highway"]',emoji:'🌉',color:'#607080',label:'Brücke'},
+  strom:       {q:'(node["power"~"plant|substation"];way["power"~"plant|substation"];)',emoji:'⚡',color:'#FFD100',label:'Strom'},
+  wasserwerk:  {q:'(node["man_made"="water_works"];node["amenity"="water_point"];)',emoji:'💧',color:'#1A5FA8',label:'Wasserwerk'},
+};
+
+// ── UHRZEIT ────────────────────────────────────────────────────
 setInterval(()=>{
   document.getElementById('clk').textContent=new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
   updateLVTimer();
 },1000);
 
-// ══════════ AUTH ══════════════════════════════════════════════════
+// ── AUTH ───────────────────────────────────────────────────────
 async function doLogin(){
   const u=document.getElementById('lu').value.trim(),p=document.getElementById('lp').value;
   if(!u||!p){document.getElementById('lerr').textContent='Bitte beide Felder.';return}
@@ -583,8 +711,7 @@ async function doLogin(){
     const fd=new FormData();fd.append('username',u);fd.append('password',p);
     const r=await fetch(BASE+'/api/auth/token',{method:'POST',body:fd});
     if(!r.ok){const e=await r.json();document.getElementById('lerr').textContent=e.detail||'Fehler';return}
-    const d=await r.json();
-    token=d.access_token;user=d.user;
+    const d=await r.json();token=d.access_token;user=d.user;
     localStorage.setItem('s2t',token);localStorage.setItem('s2u',JSON.stringify(user));
     startApp();
   }catch(e){document.getElementById('lerr').textContent='Nicht erreichbar: '+e.message}
@@ -613,70 +740,47 @@ function af(path,opts={}){
   return fetch(BASE+path,{...opts,headers:{...(opts.headers||{}),'Content-Type':'application/json','Authorization':'Bearer '+token}});
 }
 
-// ══════════ EINSATZ ═══════════════════════════════════════════════
+// ── EINSATZ ────────────────────────────────────────────────────
 async function loadEinsatz(){
   try{
     const r=await af('/api/einsaetze');
     if(r.ok){
       const list=await r.json();
-      if(list.length>0){
-        const e=list[0];eid=e.id;
-        localStorage.setItem('s2eid',eid);
-        updateEinsatzUI(e);
-      }
+      if(list.length>0){const e=list[0];eid=e.id;localStorage.setItem('s2eid',eid);updateEinsatzUI(e)}
     }
-  }catch(e){}
-  await loadTB();
-  await loadKraefte();
-  await loadAbschnitte();
-  await loadSchadensstellen();
-  await loadLagevortraege();
-  await loadMeldungen();
+  }catch(_){}
+  await Promise.all([loadTB(),loadKraefte(),loadAbschnitte(),loadLagevortraege(),loadMeldungen()]);
 }
 
 function updateEinsatzUI(e){
-  const fmt=n=>n!=null?parseInt(n).toLocaleString('de-DE'):'0';
-  document.getElementById('d-tote').textContent=fmt(e.tote);
-  document.getElementById('d-verl').textContent=fmt(e.verletzte);
-  document.getElementById('d-versch').textContent=fmt(e.verschuettete);
-  document.getElementById('d-obdach').textContent=fmt(e.obdachlose);
-  document.getElementById('d-vermisst').textContent=fmt(e.vermisste);
-  document.getElementById('d-gerettet').textContent=fmt(e.gerettete);
-  document.getElementById('bm-tote').textContent=fmt(e.tote);
-  document.getElementById('bm-verl').textContent=fmt(e.verletzte);
-  document.getElementById('bm-versch').textContent=fmt(e.verschuettete);
-  document.getElementById('bm-obdach').textContent=fmt(e.obdachlose);
-  document.getElementById('bm-vermisst').textContent=fmt(e.vermisste);
-  document.getElementById('bm-gerettet').textContent=fmt(e.gerettete);
+  const f=n=>n!=null?parseInt(n).toLocaleString('de-DE'):'0';
+  ['tote','verl','versch','obdach','vermisst','gerettet'].forEach((k,i)=>{
+    const vals=[e.tote,e.verletzte,e.verschuettete,e.obdachlose,e.vermisste,e.gerettete];
+    document.getElementById('d-'+k).textContent=f(vals[i]);
+    document.getElementById('bm-'+k).textContent=f(vals[i]);
+  });
   document.getElementById('d-lsuf').textContent=e.lagestufe||'–';
   document.getElementById('d-stand').textContent=new Date().toLocaleString('de-DE');
   document.getElementById('lbadge').textContent=(e.lagestufe||'BEREIT').toUpperCase().substring(0,12);
-  document.getElementById('d-einsatz-info').textContent=
-    `${e.kennung||'–'} · ${e.stichwort||'–'}\n${e.einsatzort||'–'}\nAlarm: ${e.alarmzeit?new Date(e.alarmzeit).toLocaleString('de-DE'):'–'}`;
-  document.getElementById('d-einsatz-info').style.fontStyle='normal';
-  document.getElementById('d-einsatz-info').style.color='';
-  document.getElementById('d-fuehrung-info').textContent=
-    `EL: ${e.einsatzleiter||'–'}\nFührungsstelle: ${e.fuehrstelle||'–'}`;
-  document.getElementById('fuehr-el-info').textContent=
-    `Einsatzleiter: ${e.einsatzleiter||'–'}\nFührungsstelle: ${e.fuehrstelle||'–'}\nAlarmierung: ${e.alarmierung||'–'}`;
+  document.getElementById('d-einsatz-info').textContent=`${e.kennung||'–'} · ${e.stichwort||'–'}\n${e.einsatzort||'–'}`;
+  document.getElementById('d-einsatz-info').style.color='';document.getElementById('d-einsatz-info').style.fontStyle='normal';
+  document.getElementById('d-fuehrung-info').textContent=`EL: ${e.einsatzleiter||'–'}\nFührungsstelle: ${e.fuehrstelle||'–'}`;
+  document.getElementById('fuehr-el-info').textContent=`Einsatzleiter: ${e.einsatzleiter||'–'}\nFührungsstelle: ${e.fuehrstelle||'–'}`;
   document.getElementById('bm-title').textContent=e.stichwort||'LAGEBILD';
   document.getElementById('bm-sub').textContent=`${e.kennung||'S2-LageLive'} · ${e.lagestufe||'–'} · Stand ${new Date().toLocaleString('de-DE')}`;
-  // Beamer-Link
   if(e.beamer_token){
     const url=`${BASE}/?beamer=${e.beamer_token}`;
-    document.getElementById('bm-beamer-link').textContent=`Beamer-URL: ${url}`;
-    document.getElementById('bm-beamer-link').innerHTML=`Beamer-URL (kein Login nötig): <a href="${url}" target="_blank" style="color:var(--yellow)">${url}</a>`;
+    document.getElementById('bm-beamer-link').innerHTML=`Beamer-URL: <a href="${url}" target="_blank" style="color:var(--yellow)">${url}</a>`;
   }
-  ticker(`${e.stichwort||'–'} · ${e.einsatzort||'–'} · Lagestufe: ${e.lagestufe||'–'}`);
-  // Karte neu zentrieren
-  if(mapObj && e.lat && e.lng) mapObj.setView([e.lat,e.lng],e.zoom||12);
+  ticker(`${e.stichwort||'–'} · ${e.einsatzort||'–'} · ${e.lagestufe||'–'}`);
+  if(mapObj&&e.lat&&e.lng){mapObj.setView([e.lat,e.lng],e.zoom||12);document.getElementById('map-status-txt').textContent=`${e.kennung||'–'} · Live`}
 }
 
-// ══════════ WEBSOCKET ══════════════════════════════════════════════
+// ── WEBSOCKET ──────────────────────────────────────────────────
 function connectWS(){
   if(ws)try{ws.close()}catch(_){}
   ws=new WebSocket(`${WSB}/ws/${eid}?token=${token}`);
-  ws.onopen=()=>toast('WebSocket verbunden','Live-Updates aktiv',false);
+  ws.onopen=()=>toast('WebSocket verbunden','Live',false);
   ws.onclose=()=>{toast('Verbindung unterbrochen','Reconnect…');setTimeout(connectWS,5000)};
   ws.onerror=()=>{};
   ws.onmessage=e=>{try{handleWS(JSON.parse(e.data))}catch(_){}};
@@ -691,27 +795,32 @@ function handleWS(m){
       renderTB();addTL(m);
       toast(m.prioritaet==='kritisch'?'🔴 KRITISCH':'📋 Eintrag',m.betreff||'–',m.prioritaet==='kritisch');
       ticker(`Eintrag ${m.zeit||''}: ${m.betreff||'–'}`); break;
-    case 'karten_zeichen': addMapMarkerObj(m); break;
-    case 'karten_zeichen_delete': removeMapMarker(m.id); break;
+    case 'karten_zeichen':
+      if(einsatzLayers.schadensstellen){addEinsatzMarker('schadensstellen',m.lat,m.lng,m.emoji||'📍',m.farbe||'#C8000A',m.tz_typ,m.beschreibung,m)}
+      break;
+    case 'kraft_neu':
+      kraefte.push(m.kraft);renderKraefte();document.getElementById('krf-n').textContent=kraefte.length;
+      if(m.kraft?.lat&&m.kraft?.lng&&einsatzLayers.kraefte){
+        const farbe={FW:'#C8000A',RD:'#22B84E',THW:'#1A5FA8'}[m.kraft.organisation]||'#E07B00';
+        const emoji={FW:'🚒',RD:'🚑',THW:'🔵'}[m.kraft.organisation]||'🟠';
+        addEinsatzMarker('kraefte',m.kraft.lat,m.kraft.lng,emoji,farbe,`${m.kraft.organisation} · ${m.kraft.einheit}`,`${m.kraft.funktion} · ${m.kraft.staerke} Mann`,m.kraft);
+      } break;
+    case 'kraft_update': {const k=kraefte.find(x=>x.id===m.kid);if(k)Object.assign(k,m);renderKraefte();break}
+    case 'kraft_delete': kraefte=kraefte.filter(x=>x.id!==m.kid);renderKraefte();break;
+    case 'abschnitt_neu': abschnitte.push(m.abschnitt);renderAbschnitte();break;
+    case 'abschnitt_update': {const a=abschnitte.find(x=>x.id===m.aid);if(a)Object.assign(a,m);renderAbschnitte();break}
+    case 'abschnitt_delete': abschnitte=abschnitte.filter(x=>x.id!==m.aid);renderAbschnitte();break;
+    case 'schadensstelle_neu': toast('❌ Schadensstelle',m.schadensstelle?.bezeichnung||'–'); break;
+    case 'bereich_neu': bereiche.push(m.bereich);renderBereiche(); break;
+    case 'bereich_delete': bereiche=bereiche.filter(x=>x.id!==m.bid);renderBereiche(); break;
+    case 'lagevortrag_neu': loadLagevortraege();toast('🎤 Lagevortrag',`Rev. ${m.revision} erstellt`,false); break;
+    case 'lagevortrag_freigegeben': loadLagevortraege();toast('✅ Lagevortrag freigegeben','',false); break;
+    case 'meldung_neu': loadMeldungen();toast('📨 Meldung',`${m.typ}`,false); break;
     case 'ki_analyse_fertig': handleKI(m); break;
-    case 'kraft_neu': kraefte.push(m.kraft); renderKraefte(); krf_cnt++; document.getElementById('krf-n').textContent=krf_cnt; break;
-    case 'kraft_update': { const k=kraefte.find(x=>x.id===m.kid); if(k) Object.assign(k,m); renderKraefte(); break; }
-    case 'kraft_delete': kraefte=kraefte.filter(x=>x.id!==m.kid); renderKraefte(); break;
-    case 'abschnitt_neu': abschnitte.push(m.abschnitt); renderAbschnitte(); break;
-    case 'abschnitt_update': { const a=abschnitte.find(x=>x.id===m.aid); if(a) Object.assign(a,m); renderAbschnitte(); break; }
-    case 'abschnitt_delete': abschnitte=abschnitte.filter(x=>x.id!==m.aid); renderAbschnitte(); break;
-    case 'schadensstelle_neu': schadensstellen.push(m.schadensstelle); break;
-    case 'schadensstelle_update': { const s=schadensstellen.find(x=>x.id===m.sid); if(s) Object.assign(s,m); break; }
-    case 'bereich_neu': bereiche.push(m.bereich); renderBereiche(); break;
-    case 'bereich_delete': bereiche=bereiche.filter(x=>x.id!==m.bid); renderBereiche(); break;
-    case 'lagevortrag_neu': loadLagevortraege(); toast('🎤 Lagevortrag',`Rev. ${m.revision} erstellt`,false); break;
-    case 'lagevortrag_freigegeben': loadLagevortraege(); toast('✅ Lagevortrag freigegeben','',false); break;
-    case 'meldung_neu': loadMeldungen(); toast('📨 Meldung',`${m.typ} für ${m.empfaenger}`,false); break;
-    case 'datei_eingang': toast('📁 '+m.datei,m.ki_kurz||'empfangen'); break;
   }
 }
 
-// ══════════ PANELS ════════════════════════════════════════════════
+// ── PANELS ─────────────────────────────────────────────────────
 function sp(id,btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.ttab').forEach(b=>b.classList.remove('active'));
@@ -725,180 +834,261 @@ function sp(id,btn){
   if(id==='ml')loadMeldungen();
 }
 
-// ══════════ KARTE ══════════════════════════════════════════════════
+// ── KARTE ──────────────────────────────────────────────────────
+let mapMode=null,bereichPunkte=[],bereichLine=null;
+
 function initMap(){
   if(mapObj)return;
-  const e_lat=parseFloat(localStorage.getItem('s2lat')||'48.4732');
-  const e_lng=parseFloat(localStorage.getItem('s2lng')||'7.9414');
-  mapObj=L.map('map',{center:[e_lat,e_lng],zoom:12});
+  mapObj=L.map('map',{center:[48.4732,7.9414],zoom:12});
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(mapObj);
+
+  // Einsatz-Layer Groups initialisieren
+  einsatzLayers.schadensstellen=L.layerGroup().addTo(mapObj);
+  einsatzLayers.kraefte=L.layerGroup().addTo(mapObj);
+  einsatzLayers.bereiche=L.layerGroup().addTo(mapObj);
+  einsatzLayers.abschnitte=L.layerGroup().addTo(mapObj);
+
+  // Overpass-Layer Groups (aus/an je nach Button)
+  Object.keys(OVP_CONFIG).forEach(k=>{ovpLayers[k]=L.layerGroup()});
+
   mapObj.on('click',onMapClick);
-  loadKarteMarkers();
-  fetchOverpass('infrastruktur');
-}
-
-function onMapClick(e){
-  if(mapMode==='add_ss'){
-    openModal('schadensstelle',{lat:e.latlng.lat,lng:e.latlng.lng});
-  } else if(mapMode==='add_bereich'){
-    bereichPunkte.push([e.latlng.lat,e.latlng.lng]);
-    if(bereichPunkte.length===1) toast('Bereich zeichnen','Weiteren Punkt klicken. Doppelklick zum Abschließen.',false);
-  } else {
-    const t=prompt('Taktisches Zeichen/Bezeichnung:','Schadensstelle');
-    if(t) af(`/api/einsaetze/${eid}/karte`,{method:'POST',body:JSON.stringify({tz_typ:t,lat:e.latlng.lat,lng:e.latlng.lng,emoji:'📍',farbe:'#C8000A',beschreibung:t})});
-  }
-}
-
-mapObj||setTimeout(()=>{
-  document&&document.addEventListener('dblclick',e=>{
-    if(mapMode==='add_bereich'&&bereichPunkte.length>=3){
-      const geo=JSON.stringify({type:'Polygon',coordinates:[bereichPunkte.map(p=>[p[1],p[0]])]});
-      openModal('bereich',{geo_json:geo});
-      bereichPunkte=[];mapMode=null;
-      document.getElementById('btn-add-bereich').classList.remove('active');
-    }
+  mapObj.on('dblclick',onMapDblClick);
+  mapObj.on('mousemove',e=>{
+    document.getElementById('map-coords').textContent=`${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
   });
-},500);
 
-function startAddSS(){
-  mapMode=mapMode==='add_ss'?null:'add_ss';
-  document.getElementById('btn-add-ss').classList.toggle('active',mapMode==='add_ss');
-  if(mapMode==='add_ss'){sp('karte',document.querySelector('.ttab:nth-child(2)'));toast('Schadensstelle setzen','Auf Karte klicken',false)}
-}
-function startAddBereich(){
-  mapMode=mapMode==='add_bereich'?null:'add_bereich';
-  bereichPunkte=[];
-  document.getElementById('btn-add-bereich').classList.toggle('active',mapMode==='add_bereich');
-  if(mapMode==='add_bereich'){sp('karte',document.querySelector('.ttab:nth-child(2)'));toast('Bereich zeichnen','Punkte klicken, Doppelklick zum Abschließen',false)}
+  // Bestehende Daten laden
+  loadEinsatzMarkers();
 }
 
-function mkIcon(emoji,color,size=30){
+function mkIcon(emoji,color,size=28){
   return L.divIcon({
     html:`<div style="background:${color};border:2px solid rgba(255,255,255,.55);border-radius:3px;width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center;font-size:${size*.42}px;box-shadow:0 2px 8px rgba(0,0,0,.8)">${emoji}</div>`,
     iconSize:[size,size],iconAnchor:[size/2,size/2],className:''
   });
 }
 
-async function loadKarteMarkers(){
-  try{
-    const r=await af(`/api/einsaetze/${eid}/karte`);
-    if(r.ok){const d=await r.json();d.forEach(addMapMarkerObj)}
-  }catch(_){}
-  loadSchadensstellen(true);
+function addEinsatzMarker(layer,lat,lng,emoji,color,title,desc,data={}){
+  if(!mapObj||!einsatzLayers[layer])return;
+  const m=L.marker([lat,lng],{icon:mkIcon(emoji,color)});
+  let popup=`<b style="color:#111">${title||'–'}</b>`;
+  if(desc)popup+=`<br/><span style="font-size:12px">${desc}</span>`;
+  if(data.schwere)popup+=`<br/><small>Schwere: ${data.schwere}</small>`;
+  if(data.status)popup+=`<br/><small>Status: ${data.status}</small>`;
+  m.bindPopup(popup);
+  einsatzLayers[layer].addLayer(m);
+  const cntEl=document.getElementById(`lcount-${layer}`);
+  if(cntEl){const n=parseInt(cntEl.textContent)||0;cntEl.textContent=n+1}
 }
 
-function addMapMarkerObj(kz){
-  if(!mapObj)return;
-  const id=kz.id||kz.id;
-  const size=kz.kategorie==='kraft'?26:30;
-  const m=L.marker([kz.lat,kz.lng],{icon:mkIcon(kz.emoji||'📍',kz.farbe||'#C8000A',size)}).addTo(mapObj);
-  m._kid=id;
-  const cat=kz.kategorie||'allgemein';
-  m.bindPopup(`<b style="color:#111">${kz.tz_typ||'–'}</b><br/>${kz.beschreibung||''}<br/><small>${kz.erstellt_von||''} ${kz.zeit||''}</small>`);
-  if(!mapMarkers[cat]) mapMarkers[cat]=[];
-  mapMarkers[cat].push(m);
-}
-
-function removeMapMarker(id){
-  for(const cat of Object.keys(mapMarkers)){
-    const i=mapMarkers[cat].findIndex(m=>m._kid===id);
-    if(i>=0){mapMarkers[cat][i].remove();mapMarkers[cat].splice(i,1);return}
-  }
-}
-
-function toggleLayer(layer){
-  layers[layer]=!layers[layer];
-  const btn=document.querySelector(`.map-btn[onclick="toggleLayer('${layer}')"]`);
-  if(btn)btn.classList.toggle('active',layers[layer]);
-  if(layer==='infrastruktur') {
-    overpassMarkers.infrastruktur.forEach(m=>layers[layer]?m.addTo(mapObj):m.remove());
-    if(layers[layer]&&overpassMarkers.infrastruktur.length===0) fetchOverpass('infrastruktur');
-  }
-  if(layer==='schulen') {
-    overpassMarkers.schulen.forEach(m=>layers[layer]?m.addTo(mapObj):m.remove());
-    if(layers[layer]&&overpassMarkers.schulen.length===0) fetchOverpass('schulen');
-  }
-  if(layer==='kraefte'||(mapMarkers.kraft)) {
-    (mapMarkers.kraft||[]).forEach(m=>layers.kraefte?m.addTo(mapObj):m.remove());
-  }
-  if(layer==='schadensstellen') {
-    (mapMarkers.schadensstelle||[]).forEach(m=>layers.schadensstellen?m.addTo(mapObj):m.remove());
-  }
-  if(layer==='bereiche') renderBereiche();
-}
-
-async function fetchOverpass(type){
-  const bounds=mapObj?mapObj.getBounds():null;
-  const s=bounds?bounds.getSouth():48.1, n=bounds?bounds.getNorth():48.8;
-  const w=bounds?bounds.getWest():7.5,  e2=bounds?bounds.getEast():8.5;
-  const q_map={
-    infrastruktur:`(node["amenity"~"hospital|fire_station|police"](${s},${w},${n},${e2});way["amenity"~"hospital|fire_station"](${s},${w},${n},${e2}););out center;`,
-    schulen:`(node["amenity"~"school|community_centre|shelter"](${s},${w},${n},${e2}););out center;`,
-  };
-  const emojiMap={'hospital':'🏥','fire_station':'🚒','police':'👮','school':'🏫','community_centre':'🏛','shelter':'⛺'};
-  const colorMap={'hospital':'#1A5FA8','fire_station':'#C8000A','police':'#1A5FA8','school':'#1A8A3C','community_centre':'#E07B00','shelter':'#607080'};
-  try{
-    const r=await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent('[out:json][timeout:15];'+q_map[type]));
-    const data=await r.json();
-    data.elements.forEach(el=>{
-      const lat=el.lat||(el.center?.lat),lon=el.lon||(el.center?.lon);
-      if(!lat||!lon)return;
-      const amenity=el.tags?.amenity||'';
-      const emoji=emojiMap[amenity]||'📍';
-      const color=colorMap[amenity]||'#607080';
-      const m=L.marker([lat,lon],{icon:mkIcon(emoji,color,22)}).addTo(mapObj);
-      m.bindPopup(`<b style="color:#111">${emoji} ${el.tags?.name||amenity}</b><br/><small>OSM</small>`);
-      overpassMarkers[type].push(m);
-    });
-  }catch(_){}
-}
-
-async function loadSchadensstellen(addToMap=false){
+async function loadEinsatzMarkers(){
+  // Schadensstellen
   try{
     const r=await af(`/api/einsaetze/${eid}/schadensstellen`);
     if(r.ok){
-      schadensstellen=await r.json();
-      if(addToMap) schadensstellen.forEach(s=>{
-        const farben={leicht:'#22B84E',mittel:'#E07B00',schwer:'#C8000A',kritisch:'#7A0006'};
-        const emojis={Brand:'🔥',Überflutung:'🌊',Einsturz:'🏗',Verletzt:'🚑',Vermisst:'🔍',Schadensstelle:'❌'};
-        addMapMarkerObj({id:`ss_${s.id}`,tz_typ:`${s.typ}: ${s.bezeichnung}`,
-          farbe:farben[s.schwere]||'#C8000A',emoji:emojis[s.typ]||'❌',
-          lat:s.lat,lng:s.lng,beschreibung:`${s.schwere} · ${s.beschreibung||''}`,
-          kategorie:'schadensstelle',ss_id:s.id});
-        if(s.radius_m>0) L.circle([s.lat,s.lng],{radius:s.radius_m,color:farben[s.schwere]||'#C8000A',fillOpacity:.15,weight:2}).addTo(mapObj);
+      const d=await r.json();
+      const farben={leicht:'#22B84E',mittel:'#E07B00',schwer:'#C8000A',kritisch:'#7A0006'};
+      const emojis={Brand:'🔥',Überflutung:'🌊',Einsturz:'🏗',Verletzt:'🚑',Vermisst:'🔍',Gefahrgut:'⚠️',Schadensstelle:'❌'};
+      einsatzLayers.schadensstellen.clearLayers();
+      d.forEach(s=>{
+        addEinsatzMarker('schadensstellen',s.lat,s.lng,emojis[s.typ]||'❌',farben[s.schwere]||'#C8000A',`${s.typ}: ${s.bezeichnung}`,s.beschreibung,s);
+        if(s.radius_m>0)L.circle([s.lat,s.lng],{radius:s.radius_m,color:farben[s.schwere]||'#C8000A',fillOpacity:.15,weight:2}).addTo(einsatzLayers.schadensstellen);
       });
+      document.getElementById('lcount-schadensstellen').textContent=d.length;
     }
+  }catch(_){}
+  // Kräfte
+  try{
+    const r=await af(`/api/einsaetze/${eid}/kraefte`);
+    if(r.ok){
+      const d=await r.json();
+      einsatzLayers.kraefte.clearLayers();
+      let cnt=0;
+      d.forEach(k=>{
+        if(!k.lat||!k.lng)return;
+        const farbe={FW:'#C8000A',RD:'#22B84E',THW:'#1A5FA8'}[k.organisation]||'#E07B00';
+        const emoji={FW:'🚒',RD:'🚑',THW:'🔵'}[k.organisation]||'🟠';
+        addEinsatzMarker('kraefte',k.lat,k.lng,emoji,farbe,`${k.organisation} · ${k.einheit}`,`${k.funktion} · ${k.staerke} Mann`,k);
+        cnt++;
+      });
+      document.getElementById('lcount-kraefte').textContent=cnt;
+    }
+  }catch(_){}
+  // Abschnitte
+  try{
+    const r=await af(`/api/einsaetze/${eid}/abschnitte`);
+    if(r.ok){
+      const d=await r.json();
+      einsatzLayers.abschnitte.clearLayers();
+      let cnt=0;
+      d.forEach(a=>{
+        if(!a.lat||!a.lng)return;
+        addEinsatzMarker('abschnitte',a.lat,a.lng,'🏛','#FFD100',`${a.nummer}: ${a.bezeichnung}`,`AL: ${a.abschnittsleiter_name||'–'}`,a);
+        cnt++;
+      });
+      document.getElementById('lcount-abschnitte').textContent=cnt;
+    }
+  }catch(_){}
+  // Bereiche
+  try{
+    const r=await af(`/api/einsaetze/${eid}/bereiche`);
+    if(r.ok){bereiche=await r.json();renderBereiche()}
   }catch(_){}
 }
 
 function renderBereiche(){
-  Object.values(mapBereiche).forEach(l=>{try{l.remove()}catch(_){}});
-  mapBereiche={};
-  if(!mapObj)return;
+  einsatzLayers.bereiche.clearLayers();
+  let cnt=0;
   bereiche.forEach(b=>{
-    if(!b.geo_json||!layers.bereiche)return;
+    if(!b.geo_json)return;
     try{
       const geo=JSON.parse(b.geo_json);
-      const l=L.geoJSON(geo,{style:{color:b.farbe||'#1A5FA8',fillOpacity:.2,weight:2}}).addTo(mapObj);
+      const l=L.geoJSON(geo,{style:{color:b.farbe||'#1A5FA8',fillOpacity:.2,weight:2}});
       l.bindPopup(`<b style="color:#111">🔷 ${b.bezeichnung}</b><br/>${b.typ}`);
-      mapBereiche[b.id]=l;
+      einsatzLayers.bereiche.addLayer(l);
+      cnt++;
     }catch(_){}
   });
+  document.getElementById('lcount-bereiche').textContent=cnt;
 }
 
-// ══════════ KRÄFTE ════════════════════════════════════════════════
-async function loadKraefte(){
+// Layer Panel toggle
+function toggleLayerPanel(){
+  const h=document.getElementById('layer-header');
+  const b=document.getElementById('layer-body');
+  h.classList.toggle('open');b.classList.toggle('open');
+}
+
+// Toggle einzelner Layer
+async function toggleLayer(name){
+  const btn=document.getElementById(`lbtn-${name}`);
+  if(!btn)return;
+
+  // Einsatz-Layer (immer vorhanden)
+  if(einsatzLayers[name]){
+    const on=LAYER_STATE[name]!==false;
+    if(on){einsatzLayers[name].remove();LAYER_STATE[name]=false}
+    else{einsatzLayers[name].addTo(mapObj);LAYER_STATE[name]=true}
+    btn.classList.toggle('on',LAYER_STATE[name]!==false);
+    return;
+  }
+
+  // Overpass-Layer
+  if(!OVP_CONFIG[name])return;
+  const grp=ovpLayers[name];
+  const loaded=grp.getLayers().length>0;
+  const on=LAYER_STATE[name]===true;
+
+  if(on){grp.remove();LAYER_STATE[name]=false;btn.classList.remove('on');return}
+
+  // Erst laden wenn noch nicht geladen
+  if(!loaded){
+    await fetchOverpassLayer(name);
+  }
+  grp.addTo(mapObj);
+  LAYER_STATE[name]=true;
+  btn.classList.add('on');
+}
+
+async function loadAllLayers(){
+  const names=Object.keys(OVP_CONFIG);
+  toast('⬇ Lade alle Layer…',`${names.length} Abfragen starten`,false);
+  for(const name of names){
+    if(!LAYER_STATE[name])await toggleLayer(name);
+  }
+}
+
+async function fetchOverpassLayer(name){
+  const cfg=OVP_CONFIG[name];
+  if(!cfg||!mapObj)return;
+  const spin=document.getElementById(`lspin-${name}`);
+  const dot=document.getElementById(`ldot-${name}`);
+  const cntEl=document.getElementById(`lcount-${name}`);
+  if(spin){spin.style.display='inline-block';if(dot)dot.style.display='none'}
+
+  const b=mapObj.getBounds().pad(0.1);
+  const bbox=`${b.getSouth()},${b.getWest()},${b.getNorth()},${b.getEast()}`;
+  const query=`[out:json][timeout:20];${cfg.q}(${bbox});out center 200;`;
+
   try{
-    const r=await af(`/api/einsaetze/${eid}/kraefte`);
-    if(r.ok){ kraefte=await r.json(); renderKraefte(); }
-  }catch(_){}
+    const r=await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(query));
+    const data=await r.json();
+    const grp=ovpLayers[name];
+    grp.clearLayers();
+    data.elements.forEach(el=>{
+      const lat=el.lat||(el.center?.lat),lon=el.lon||(el.center?.lon);
+      if(!lat||!lon)return;
+      const m=L.marker([lat,lon],{icon:mkIcon(cfg.emoji,cfg.color,22)});
+      const name2=el.tags?.name||el.tags?.ref||cfg.label;
+      const addr=el.tags?.['addr:street']?`${el.tags['addr:street']} ${el.tags['addr:housenumber']||''}`.trim():'';
+      m.bindPopup(`<b style="color:#111">${cfg.emoji} ${name2}</b>${addr?'<br/>'+addr:''}<br/><small style="color:#666">OSM · ${cfg.label}</small>`);
+      grp.addLayer(m);
+    });
+    const cnt=data.elements.length;
+    if(cntEl)cntEl.textContent=cnt;
+    if(spin)spin.style.display='none';
+    if(dot)dot.style.display='inline-block';
+    return cnt;
+  }catch(e){
+    if(cntEl)cntEl.textContent='Err';
+    if(spin)spin.style.display='none';
+    toast('Overpass-Fehler',name,true);
+    return 0;
+  }
+}
+
+function saveMapExtent(){
+  if(!mapObj)return;
+  const c=mapObj.getCenter();
+  localStorage.setItem('s2lat',c.lat);localStorage.setItem('s2lng',c.lng);
+  localStorage.setItem('s2zoom',mapObj.getZoom());
+  toast('💾 Kartenstand gespeichert','',false);
+}
+
+// Karte: Klick-Modi
+function startMapMode(mode){
+  mapMode=mapMode===mode?null:mode;
+  document.getElementById('btn-add-ss').classList.toggle('active-mode',mapMode==='add_ss');
+  document.getElementById('btn-add-bereich').classList.toggle('active-mode',mapMode==='add_bereich');
+  bereichPunkte=[];
+  if(bereichLine){bereichLine.remove();bereichLine=null}
+  if(mapMode==='add_ss'){sp('karte',document.querySelector('.ttab:nth-child(2)'));toast('➕ Schadensstelle','Auf Karte klicken',false)}
+  if(mapMode==='add_bereich'){sp('karte',document.querySelector('.ttab:nth-child(2)'));toast('🔷 Bereich','Punkte klicken · Doppelklick zum Abschließen',false)}
+}
+
+function onMapClick(e){
+  if(mapMode==='add_ss'){
+    openModal('schadensstelle',{lat:e.latlng.lat,lng:e.latlng.lng});
+  }else if(mapMode==='add_bereich'){
+    bereichPunkte.push([e.latlng.lat,e.latlng.lng]);
+    if(bereichLine)bereichLine.remove();
+    if(bereichPunkte.length>=2){
+      bereichLine=L.polyline(bereichPunkte,{color:'#1A5FA8',dashArray:'6 4',weight:2}).addTo(mapObj);
+    }
+  }else{
+    const t=prompt('Taktisches Zeichen / Bezeichnung:');
+    if(t)af(`/api/einsaetze/${eid}/karte`,{method:'POST',body:JSON.stringify({tz_typ:t,lat:e.latlng.lat,lng:e.latlng.lng,emoji:'📍',farbe:'#C8000A',beschreibung:t})});
+  }
+}
+
+function onMapDblClick(e){
+  if(mapMode==='add_bereich'&&bereichPunkte.length>=3){
+    if(bereichLine){bereichLine.remove();bereichLine=null}
+    const geo=JSON.stringify({type:'Polygon',coordinates:[bereichPunkte.map(p=>[p[1],p[0]])]});
+    openModal('bereich',{geo_json:geo});
+    bereichPunkte=[];
+  }
+}
+
+// ── KRÄFTE ─────────────────────────────────────────────────────
+async function loadKraefte(){
+  try{const r=await af(`/api/einsaetze/${eid}/kraefte`);if(r.ok){kraefte=await r.json();renderKraefte()}}catch(_){}
 }
 function renderKraefte(){
   const el=document.getElementById('d-krf');
-  krf_cnt=kraefte.length;
-  document.getElementById('krf-n').textContent=krf_cnt;
+  document.getElementById('krf-n').textContent=kraefte.length;
   const gesamt=kraefte.reduce((s,k)=>s+(k.staerke||0),0);
-  document.getElementById('krf-gesamt').textContent=`${krf_cnt} Einheiten · ${gesamt} Kräfte`;
+  document.getElementById('krf-gesamt').textContent=`${kraefte.length} Einheiten · ${gesamt} Kräfte`;
   if(!kraefte.length){el.innerHTML='<div style="color:var(--t2);font-style:italic;font-size:.8rem;padding:10px">Noch keine Kräfte. „+ Einheit" klicken.</div>';return}
   el.innerHTML=kraefte.map(k=>{
     let cls='ext';
@@ -914,42 +1104,37 @@ function renderKraefte(){
         <span class="ks g">👥 ${k.staerke||0}</span>
         <span class="ks ${st_cls}">${k.status||'–'}</span>
         ${k.fahrzeuge?`<span class="ks">${k.fahrzeuge}</span>`:''}
-        ${k.lat?'<span class="ks b">📍</span>':''}
+        ${k.lat?'<span class="ks b">📍 Karte</span>':''}
       </div>
-      ${k.ansprechpartner?`<div style="font-family:var(--fm);font-size:.56rem;color:var(--t2);margin-top:4px">AP: ${k.ansprechpartner} ${k.funk?'· '+k.funk:''}</div>`:''}
+      ${k.ansprechpartner?`<div style="font-family:var(--fm);font-size:.56rem;color:var(--t2);margin-top:4px">AP: ${k.ansprechpartner}${k.funk?' · '+k.funk:''}</div>`:''}
     </div>`;
   }).join('');
 }
 
-// ══════════ ABSCHNITTE / FÜHRUNG ══════════════════════════════════
+// ── ABSCHNITTE ─────────────────────────────────────────────────
 async function loadAbschnitte(){
   try{const r=await af(`/api/einsaetze/${eid}/abschnitte`);if(r.ok){abschnitte=await r.json();renderAbschnitte()}}catch(_){}
 }
-async function loadFuehrung(){
-  await loadAbschnitte();
-}
+async function loadFuehrung(){await loadAbschnitte()}
 function renderAbschnitte(){
   const el=document.getElementById('abschn-list');
+  document.getElementById('lcount-abschnitte').textContent=abschnitte.filter(a=>a.lat).length;
   if(!abschnitte.length){el.innerHTML='<div style="color:var(--t2);font-style:italic">Noch keine Abschnitte.</div>';return}
   el.innerHTML=abschnitte.map(a=>{
-    const sb={'aktiv':'sb-aktiv','wartend':'sb-wartend','abgeschlossen':'sb-abg'}[a.status]||'sb-abg';
+    const sb={'aktiv':'sb-aktiv','wartend':'sb-wartend','abgeschlossen':'sb-abg'}[a.status]||'sb-aktiv';
     return `<div class="abschn-card" onclick="openModal('abschnitt-edit',${JSON.stringify(a).replace(/"/g,'&quot;')})">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
         <span class="ac-nr">${a.nummer}</span>
-        <span class="status-badge ${sb}">${a.status||'aktiv'}</span>
+        <span class="sb ${sb}">${a.status||'aktiv'}</span>
       </div>
       <div class="ac-name">${a.bezeichnung||'–'}</div>
       <div class="ac-al">${a.aufgabe||'–'}</div>
-      <div class="ac-meta">
-        AL: ${a.abschnittsleiter_name||'–'} · Funk: ${a.abschnittsleiter_funk||'–'}
-        ${a.abschnittsleiter_tel?'<br/>Tel: '+a.abschnittsleiter_tel:''}
-        · Stärke: ${a.staerke||0}
-      </div>
+      <div class="ac-meta">AL: ${a.abschnittsleiter_name||'–'} · Funk: ${a.abschnittsleiter_funk||'–'}${a.abschnittsleiter_tel?'<br/>Tel: '+a.abschnittsleiter_tel:''}<br/>Stärke: ${a.staerke||0} ${a.lat?'· 📍 auf Karte':''}</div>
     </div>`;
   }).join('');
 }
 
-// ══════════ TAGEBUCH ══════════════════════════════════════════════
+// ── TAGEBUCH ───────────────────────────────────────────────────
 async function loadTB(){
   try{const r=await af(`/api/einsaetze/${eid}/tagebuch`);if(r.ok){tbData=(await r.json()).reverse();renderTB()}}catch(_){}
 }
@@ -977,46 +1162,31 @@ function renderTB(){
     </div>
   </div>`).join('');
 }
-async function verifyChain(){
-  const r=await af(`/api/einsaetze/${eid}/tagebuch/verify`);const d=await r.json();
-  if(d.valid)toast('🔒 Integrität OK',`${d.eintraege} Einträge geprüft`,false);
-  else toast('⚠ Fehler!',`${d.fehler?.length||0} fehlerhafte Einträge`,true);
-}
+async function verifyChain(){const r=await af(`/api/einsaetze/${eid}/tagebuch/verify`);const d=await r.json();d.valid?toast('🔒 Integrität OK',`${d.eintraege} Einträge`,false):toast('⚠ Fehler!',`${d.fehler?.length} fehlerhafte`,true)}
 async function exportTB(){window.open(`${BASE}/api/einsaetze/${eid}/export/tagebuch`,'_blank')}
 
-// ══════════ TIMELINE ══════════════════════════════════════════════
 function addTL(e){
   tlData.unshift(e);
   const el=document.getElementById('d-tl');
-  el.innerHTML=tlData.slice(0,15).map((t,i)=>
-    `<div style="display:grid;grid-template-columns:68px 1fr;border-left:2px solid ${i===0?'var(--red)':'var(--bd)'};margin-left:5px;margin-bottom:4px">
+  el.innerHTML=tlData.slice(0,15).map((t,i)=>`
+    <div style="display:grid;grid-template-columns:68px 1fr;border-left:2px solid ${i===0?'var(--red)':'var(--bd)'};margin-left:5px;margin-bottom:4px">
       <div style="font-family:var(--fm);font-size:.56rem;color:${i===0?'#ff8888':'var(--t2)'};padding:8px 5px 8px 10px">${t.zeit||'–'}</div>
       <div style="padding:7px 7px 7px 9px;border-left:1px solid var(--bd)">
         <span style="font-family:var(--fm);font-size:.5rem;padding:1px 5px;border-radius:3px;background:#0A1828;color:#5BA8E0;display:inline-block;margin-bottom:3px">${(t.kategorie||'Meldung').toUpperCase()}</span>
         <div style="font-size:.74rem">${t.betreff||t.inhalt?.substring(0,100)||'–'}</div>
       </div>
-    </div>`
-  ).join('');
+    </div>`).join('');
   document.getElementById('tl-count').textContent=tlData.length;
 }
 
-// ══════════ LAGEVORTRAG ═══════════════════════════════════════════
+// ── LAGEVORTRAG ────────────────────────────────────────────────
 let lvList=[];
-
 async function loadLagevortraege(){
-  try{
-    const r=await af(`/api/einsaetze/${eid}/lagevortraege`);
-    if(r.ok){
-      lvList=await r.json();
-      renderLagevortraege();
-    }
-  }catch(_){}
+  try{const r=await af(`/api/einsaetze/${eid}/lagevortraege`);if(r.ok){lvList=await r.json();renderLagevortraege()}}catch(_){}
 }
-
 function renderLagevortraege(){
   if(!lvList.length)return;
-  const lv=lvList[0];
-  lvCurrent=lv;
+  const lv=lvList[0];lvCurrent=lv;
   document.getElementById('lv-rev').textContent=`Rev. ${lv.revision}`;
   document.getElementById('lv-status').textContent=lv.freigegeben?'✓ FREIGEGEBEN':'ENTWURF';
   document.getElementById('lv-status').className='stag '+(lv.freigegeben?'ok-tag':'cr-tag');
@@ -1024,59 +1194,44 @@ function renderLagevortraege(){
   document.getElementById('lv-inhalt').textContent=lv.inhalt||'–';
   document.getElementById('lv-current').style.display='block';
   document.getElementById('bm-lv').textContent=lv.freigegeben?(lv.inhalt||'–').substring(0,500)+'…':'[Lagevortrag noch nicht freigegeben]';
-  if(lv.naechster_dt){
-    lvNaechster=new Date(lv.naechster_dt);
-    document.getElementById('lv-naechster-dt').textContent='Nächster: '+lvNaechster.toLocaleString('de-DE');
-    document.getElementById('lv-info').textContent=`Intervall: ${lv.intervall_min} Min · Rev. ${lv.revision} von ${lv.erstellt_von}`;
-  }
-  const listEl=document.getElementById('lv-list');
-  listEl.innerHTML=lvList.slice(0,5).map(l=>`
-    <div style="background:var(--p2);border:1px solid var(--bd);border-radius:4px;padding:8px 12px;cursor:pointer" onclick="document.getElementById('lv-inhalt').textContent='Rev. ${l.revision}:\n'+${JSON.stringify(l.inhalt||'–')};document.getElementById('lv-current').style.display='block'">
+  if(lv.naechster_dt){lvNaechster=new Date(lv.naechster_dt);document.getElementById('lv-naechster-dt').textContent='Nächster: '+lvNaechster.toLocaleString('de-DE')}
+  document.getElementById('lv-info').textContent=`Intervall: ${lv.intervall_min} Min · Rev. ${lv.revision} von ${lv.erstellt_von||'–'}`;
+  document.getElementById('lv-list').innerHTML=lvList.slice(0,8).map(l=>`
+    <div style="background:var(--p2);border:1px solid var(--bd);border-radius:4px;padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:10px" onclick="document.getElementById('lv-inhalt').textContent=${JSON.stringify(l.inhalt||'–')};document.getElementById('lv-current').style.display='block'">
       <span style="font-family:var(--fh);font-size:.85rem;letter-spacing:2px;color:var(--yellow)">Rev. ${l.revision}</span>
-      <span style="font-family:var(--fm);font-size:.58rem;color:var(--t2);margin-left:10px">${l.erstellt_dt?new Date(l.erstellt_dt).toLocaleString('de-DE'):'–'}</span>
-      ${l.freigegeben?'<span style="background:#0A1A10;color:var(--gl);border:1px solid var(--green);font-size:.52rem;padding:1px 6px;border-radius:3px;margin-left:8px">✓ FREIGEGEBEN</span>':''}
-      <span style="font-family:var(--fm);font-size:.58rem;color:var(--t2);margin-left:8px">von ${l.erstellt_von||'–'}</span>
+      ${l.freigegeben?'<span style="background:#0A1A10;color:var(--gl);border:1px solid var(--green);font-size:.52rem;padding:1px 6px;border-radius:3px">✓</span>':''}
+      <span style="font-family:var(--fm);font-size:.58rem;color:var(--t2)">${l.erstellt_dt?new Date(l.erstellt_dt).toLocaleString('de-DE'):'–'} · ${l.erstellt_von||'–'}</span>
     </div>`).join('');
 }
-
 async function genLagevortrag(){
   const intervall=parseInt(document.getElementById('lv-intervall').value)||60;
-  toast('⏳ KI generiert Lagevortrag …','Ca. 30 Sekunden');
+  toast('⏳ KI generiert Lagevortrag …','~30 Sekunden');
   try{
     const r=await af(`/api/einsaetze/${eid}/lagevortraege/generieren`,{method:'POST',body:JSON.stringify({intervall_min:intervall})});
-    if(r.ok){const d=await r.json();loadLagevortraege();toast('✅ Lagevortrag fertig',`Rev. ${d.revision} · ${d.naechster_dt?'Nächster: '+new Date(d.naechster_dt).toLocaleTimeString('de-DE'):''}`,false)}
+    if(r.ok){const d=await r.json();loadLagevortraege();toast('✅ Lagevortrag fertig',`Rev. ${d.revision}`,false)}
     else toast('Fehler','KI-Generierung fehlgeschlagen',true);
   }catch(e){toast('Fehler',e.message,true)}
 }
-
 async function freigebenLV(){
   if(!lvCurrent)return;
   const r=await af(`/api/einsaetze/${eid}/lagevortraege/${lvCurrent.id}/freigeben`,{method:'POST',body:'{}'});
-  if(r.ok){loadLagevortraege();toast('✅ Freigegeben','Lagevortrag ist jetzt im Beamer sichtbar',false)}
+  if(r.ok){loadLagevortraege();toast('✅ Freigegeben','Im Beamer sichtbar',false)}
 }
-
 function updateLVTimer(){
   if(!lvNaechster)return;
   const diff=lvNaechster-new Date();
   const el=document.getElementById('lv-timer');
-  if(diff<=0){
-    el.textContent='JETZT';el.className='timer-display ring';
-    if(!el._notified){toast('🔔 Lagevortrag!','Zeit für den nächsten Lagevortrag!',true);el._notified=true}
-    return;
-  }
-  const mins=Math.floor(diff/60000),secs=Math.floor((diff%60000)/1000);
-  el.textContent=`${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+  if(diff<=0){el.textContent='JETZT!';el.className='timer-display ring';if(!el._n){toast('🔔 Lagevortrag!','Jetzt fällig!',true);el._n=true}return}
+  const m=Math.floor(diff/60000),s=Math.floor((diff%60000)/1000);
+  el.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   el.className='timer-display'+(diff<300000?' warn':'');
-  el._notified=false;
-  if(diff<300000&&diff>290000) toast('⏰ 5 Min bis Lagevortrag','Vorbereitung starten',false);
+  el._n=false;
+  if(diff<300000&&diff>295000)toast('⏰ 5 Min bis Lagevortrag','Vorbereitung starten',false);
 }
 
-// ══════════ MELDUNGEN ══════════════════════════════════════════════
+// ── MELDUNGEN ──────────────────────────────────────────────────
 async function loadMeldungen(){
-  try{
-    const r=await af(`/api/einsaetze/${eid}/meldungen`);
-    if(r.ok){const d=await r.json();renderMeldungen(d)}
-  }catch(_){}
+  try{const r=await af(`/api/einsaetze/${eid}/meldungen`);if(r.ok){renderMeldungen(await r.json())}}catch(_){}
 }
 function renderMeldungen(meldungen){
   const el=document.getElementById('ml-list');
@@ -1086,21 +1241,20 @@ function renderMeldungen(meldungen){
       <span style="color:var(--yellow)">${m.typ}</span>
       <span>→ ${m.empfaenger||'–'}</span>
       ${m.ki_generiert?'<span style="background:#1A1500;color:var(--yellow);border:1px solid var(--yd);font-size:.52rem;padding:1px 5px;border-radius:3px">KI</span>':''}
-      ${m.versendet?'<span style="background:#0A1A10;color:var(--gl);border:1px solid var(--green);font-size:.52rem;padding:1px 5px;border-radius:3px">✓ Versendet</span>':''}
+      ${m.versendet?'<span style="background:#0A1A10;color:var(--gl);border:1px solid var(--green);font-size:.52rem;padding:1px 5px;border-radius:3px">✓</span>':''}
       <span style="margin-left:auto">${m.erstellt_dt?new Date(m.erstellt_dt).toLocaleTimeString('de-DE'):'–'}</span>
-      ${!m.versendet?`<button class="btn-sm" onclick="markVersendet(${m.id})" style="margin-left:8px">✓ Als versendet markieren</button>`:''}
-      <button class="btn-sm" onclick="copyMeldung(${JSON.stringify(m.inhalt).replace(/"/g,'&quot;')})" style="margin-left:4px">📋</button>
+      ${!m.versendet?`<button class="btn-sm" style="margin-left:6px" onclick="markVersendet(${m.id})">✓ Versendet</button>`:''}
+      <button class="btn-sm" onclick="navigator.clipboard.writeText(${JSON.stringify(m.inhalt||'').replace(/"/g,'&quot;')}).then(()=>toast('📋 Kopiert','',false))" style="margin-left:4px">📋</button>
     </div>
     <div class="ml-body">${m.inhalt||'–'}</div>
   </div>`).join('');
 }
 async function markVersendet(mid){
   await af(`/api/einsaetze/${eid}/meldungen/${mid}/versendet`,{method:'POST',body:'{}'});
-  loadMeldungen();toast('✅ Als versendet markiert','',false);
+  loadMeldungen();toast('✅ Versendet','',false);
 }
-function copyMeldung(txt){navigator.clipboard.writeText(txt).then(()=>toast('📋 Kopiert','',false))}
 
-// ══════════ KI-ANALYSE ════════════════════════════════════════════
+// ── KI-ANALYSE ─────────────────────────────────────────────────
 function gv(id){return(document.getElementById(id)||{}).value||''}
 function gtz(){return[...document.querySelectorAll('.tzp.sel')].map(c=>c.dataset.v).join(', ')}
 function gout(){return[...document.querySelectorAll('input[name="out"]:checked')].map(c=>c.value)}
@@ -1111,47 +1265,35 @@ async function runAnalysis(){
   if(!sl&&!ort){setStatus('⚠ Bitte Einsatzort und Schadenslage eingeben.','error');return}
   document.getElementById('bsub').disabled=true;
   setStatus('<span class="sp"></span> Einsatz anlegen + KI analysiert …','thinking');
-
-  const einsatzData={
-    kennung:gv('f-stw')?`E-${new Date().toISOString().slice(0,10)}`:`E-${new Date().toISOString().slice(0,10)}`,
-    stichwort:gv('f-stw')||ort,einsatzort:ort,lagestufe:gv('f-lsuf'),
-    einsatzleiter:gv('f-el'),fuehrstelle:gv('f-fuehrstelle'),
-    lat:parseFloat(gv('f-koor')?.match(/([\d.]+)[°\s]*N/)?.[1]||'48.4732'),
-    lng:parseFloat(gv('f-koor')?.match(/([\d.]+)[°\s]*E/)?.[1]||'7.9414'),
-  };
-
-  // Einsatz anlegen oder aktualisieren
+  // Einsatz aktualisieren
   try{
-    const exists=await af(`/api/einsaetze/${eid}`);
-    if(exists.ok){
-      await af(`/api/einsaetze/${eid}`,{method:'PATCH',body:JSON.stringify({
-        stichwort:einsatzData.stichwort,einsatzort:einsatzData.einsatzort,
-        lagestufe:einsatzData.lagestufe,einsatzleiter:einsatzData.einsatzleiter,
-        fuehrstelle:einsatzData.fuehrstelle,lat:einsatzData.lat,lng:einsatzData.lng,
-        tote:parseInt(gv('f-tote'))||0,verletzte:parseInt(gv('f-verl'))||0,
-        verschuettete:parseInt(gv('f-versch'))||0,obdachlose:parseInt(gv('f-obdach'))||0,
-        vermisste:parseInt(gv('f-vermisst'))||0,gerettete:parseInt(gv('f-gerettet'))||0,
-      })});
-    }
+    await af(`/api/einsaetze/${eid}`,{method:'PATCH',body:JSON.stringify({
+      stichwort:gv('f-stw')||ort,einsatzort:ort,lagestufe:gv('f-lsuf'),
+      einsatzleiter:gv('f-el'),fuehrstelle:gv('f-fuehrstelle'),
+      lat:parseFloat(gv('f-koor')?.match(/([\d.]+)[°\s]*N/)?.[1]||'48.4732'),
+      lng:parseFloat(gv('f-koor')?.match(/([\d.]+)[°\s]*E/)?.[1]||'7.9414'),
+      tote:parseInt(gv('f-tote'))||0,verletzte:parseInt(gv('f-verl'))||0,
+      verschuettete:parseInt(gv('f-versch'))||0,obdachlose:parseInt(gv('f-obdach'))||0,
+      vermisste:parseInt(gv('f-vermisst'))||0,gerettete:parseInt(gv('f-gerettet'))||0,
+    })});
   }catch(_){}
-
-  const payload={
-    stichwort:gv('f-stw'),einsatzort:ort,lagestufe:gv('f-lsuf'),taktischeZeichen:gtz(),
+  const payload={stichwort:gv('f-stw'),einsatzort:ort,lagestufe:gv('f-lsuf'),taktischeZeichen:gtz(),
     schadenslage:sl,gefahrenlage:gv('f-gl'),tote:gv('f-tote'),verletzte:gv('f-verl'),
     verschuettete:gv('f-versch'),obdachlose:gv('f-obdach'),vermisste:gv('f-vermisst'),
     kraefte:gv('f-krf'),geoLage:gv('f-geo'),koordinaten:gv('f-koor'),temperatur:gv('f-wtr'),
-    outputs:gout(),hinweise:gv('f-hint'),
-  };
+    outputs:gout(),hinweise:gv('f-hint')};
   lastInputs=payload;
-
   try{
     const r=await af(`/api/einsaetze/${eid}/ki/analyse`,{method:'POST',body:JSON.stringify(payload)});
     if(r.ok){const d=await r.json();handleKI(d);setStatus('✅ Fertig · '+new Date().toLocaleTimeString('de-DE'),'done')}
     else{const e=await r.json().catch(()=>({}));setStatus('⛔ '+(e.detail||'Fehler'),'error')}
   }catch(e){setStatus('⛔ '+e.message,'error')}
   document.getElementById('bsub').disabled=false;
-  // Karte aktualisieren
-  if(mapObj&&einsatzData.lat&&einsatzData.lng) mapObj.setView([einsatzData.lat,einsatzData.lng],12);
+  // Karte neu laden
+  loadEinsatzMarkers();
+  const lat=parseFloat(gv('f-koor')?.match(/([\d.]+)[°\s]*N/)?.[1]||'0');
+  const lng=parseFloat(gv('f-koor')?.match(/([\d.]+)[°\s]*E/)?.[1]||'0');
+  if(mapObj&&lat>0&&lng>0)mapObj.setView([lat,lng],12);
 }
 
 function handleKI(d){
@@ -1170,22 +1312,17 @@ function handleKI(d){
   ticker(`KI-Analyse ${now}: ${lage.substring(0,100)}`);
 }
 
-// ══════════ TICKER + TOASTS ════════════════════════════════════════
+// ── TICKER + TOASTS ────────────────────────────────────────────
 function ticker(msg){document.getElementById('ttxt').textContent=`⚠ ${msg} · S2-LageLive · FwDV 102`}
 function toast(title,body,crit=false){
-  const el=document.createElement('div');
-  el.className='toast'+(crit?' crit':'');
+  const el=document.createElement('div');el.className='toast'+(crit?' crit':'');
   el.innerHTML=`<div class="ttt">${title}</div><div class="ttb">${body||''}</div>`;
-  el.onclick=()=>el.remove();
-  document.getElementById('toa').appendChild(el);
+  el.onclick=()=>el.remove();document.getElementById('toa').appendChild(el);
   setTimeout(()=>{if(el.parentNode)el.remove()},6000);
 }
-function copyText(id){
-  const el=document.getElementById(id);if(!el)return;
-  navigator.clipboard.writeText(el.textContent||'').then(()=>toast('📋 Kopiert','',false));
-}
+function copyText(id){const el=document.getElementById(id);if(!el)return;navigator.clipboard.writeText(el.textContent||'').then(()=>toast('📋 Kopiert','',false))}
 
-// ══════════ FILE UPLOAD ════════════════════════════════════════════
+// ── FILE UPLOAD ────────────────────────────────────────────────
 const upa=document.getElementById('upa');
 upa.addEventListener('dragover',e=>{e.preventDefault();upa.classList.add('drag')});
 upa.addEventListener('dragleave',()=>upa.classList.remove('drag'));
@@ -1202,263 +1339,48 @@ function handleFiles(files){
   });
 }
 
-// ══════════ MODAL SYSTEM ══════════════════════════════════════════
+// ── MODAL SYSTEM ───────────────────────────────────────────────
 let currentModalSave=null;
-
 function openModal(type,data={}){
   const configs={
-    'tb':{
-      title:'TAGEBUCHEINTRAG',
-      body:`<div class="mg2">
-        <div class="mf"><label>Kategorie</label><select id="m-kat"><option>Lage</option><option>Maßnahme</option><option>Meldung</option><option>Vordruck</option></select></div>
-        <div class="mf"><label>Priorität</label><select id="m-prio"><option>normal</option><option>hoch</option><option>kritisch</option></select></div>
-      </div>
-      <div class="mg2">
-        <div class="mf"><label>Betreff</label><input id="m-betr" type="text"/></div>
-        <div class="mf"><label>An / Empfänger</label><input id="m-an" type="text" placeholder="Stab, EL, BSR …"/></div>
-      </div>
-      <div class="mf"><label>Inhalt *</label><textarea id="m-inh"></textarea></div>`,
-      save:async()=>{
-        const inh=document.getElementById('m-inh').value.trim();if(!inh)return;
-        await af(`/api/einsaetze/${eid}/tagebuch`,{method:'POST',body:JSON.stringify({
-          kategorie:document.getElementById('m-kat').value,prioritaet:document.getElementById('m-prio').value,
-          betreff:document.getElementById('m-betr').value,inhalt:inh,
-          an:document.getElementById('m-an').value})});
-        closeModal();loadTB();toast('✅ Eintrag gespeichert','',false);
-      }
-    },
-    'kraft':{
-      title:'EINHEIT ERFASSEN',
-      body:`<div class="mg3">
-        <div class="mf"><label>Organisation</label><select id="m-org"><option>FW</option><option>RD</option><option>THW</option><option>Pol</option><option>BW</option><option>Sonstige</option></select></div>
-        <div class="mf"><label>Einheit/Verband</label><input id="m-einheit" type="text" placeholder="FF Offenburg"/></div>
-        <div class="mf"><label>Stärke (Pers.)</label><input id="m-staerke" type="number" min="0" value="0"/></div>
-      </div>
-      <div class="mg2">
-        <div class="mf"><label>Funktion / Auftrag</label><input id="m-funktion" type="text" placeholder="Bergung A1"/></div>
-        <div class="mf"><label>Fahrzeuge</label><input id="m-fahrzeuge" type="text" placeholder="2×HLF, 1×DLK"/></div>
-      </div>
-      <div class="mg2">
-        <div class="mf"><label>Ansprechpartner</label><input id="m-ap" type="text" placeholder="Name, Dienstgrad"/></div>
-        <div class="mf"><label>Funkrufname</label><input id="m-funk" type="text" placeholder="Florian Offenburg 1"/></div>
-      </div>
-      <div class="mg3">
-        <div class="mf"><label>Status</label><select id="m-status"><option>im_einsatz</option><option>verfügbar</option><option>wartend</option><option>abgezogen</option></select></div>
-        <div class="mf"><label>Abschnitt</label><select id="m-abschnitt"><option value="">– kein –</option>${abschnitte.map(a=>`<option value="${a.id}">${a.nummer} ${a.bezeichnung}</option>`).join('')}</select></div>
-        <div class="mf"><label>Auf Karte (lat,lng)</label><input id="m-latlon" type="text" placeholder="48.473, 7.941"/></div>
-      </div>`,
-      save:async()=>{
-        const latlon=document.getElementById('m-latlon').value.split(',').map(x=>parseFloat(x.trim()));
-        await af(`/api/einsaetze/${eid}/kraefte`,{method:'POST',body:JSON.stringify({
-          organisation:document.getElementById('m-org').value,
-          einheit:document.getElementById('m-einheit').value,
-          staerke:parseInt(document.getElementById('m-staerke').value)||0,
-          funktion:document.getElementById('m-funktion').value,
-          fahrzeuge:document.getElementById('m-fahrzeuge').value,
-          ansprechpartner:document.getElementById('m-ap').value,
-          funk:document.getElementById('m-funk').value,
-          status:document.getElementById('m-status').value,
-          abschnitt_id:document.getElementById('m-abschnitt').value||null,
-          lat:latlon[0]||null,lng:latlon[1]||null})});
-        closeModal();toast('✅ Einheit erfasst','',false);
-      }
-    },
-    'kraft-edit':{
-      title:'EINHEIT BEARBEITEN',
-      body:`<div class="mg3">
-        <div class="mf"><label>Organisation</label><select id="m-org"><option ${data.organisation==='FW'?'selected':''}>FW</option><option ${data.organisation==='RD'?'selected':''}>RD</option><option ${data.organisation==='THW'?'selected':''}>THW</option><option>Pol</option><option>Sonstige</option></select></div>
-        <div class="mf"><label>Einheit</label><input id="m-einheit" value="${data.einheit||''}" type="text"/></div>
-        <div class="mf"><label>Stärke</label><input id="m-staerke" type="number" value="${data.staerke||0}"/></div>
-      </div>
-      <div class="mg2">
-        <div class="mf"><label>Funktion</label><input id="m-funktion" value="${data.funktion||''}" type="text"/></div>
-        <div class="mf"><label>Fahrzeuge</label><input id="m-fahrzeuge" value="${data.fahrzeuge||''}" type="text"/></div>
-      </div>
-      <div class="mg2">
-        <div class="mf"><label>Ansprechpartner</label><input id="m-ap" value="${data.ansprechpartner||''}" type="text"/></div>
-        <div class="mf"><label>Funk</label><input id="m-funk" value="${data.funk||''}" type="text"/></div>
-      </div>
-      <div class="mg2">
-        <div class="mf"><label>Status</label><select id="m-status">
-          <option ${data.status==='im_einsatz'?'selected':''}>im_einsatz</option>
-          <option ${data.status==='verfügbar'?'selected':''}>verfügbar</option>
-          <option ${data.status==='wartend'?'selected':''}>wartend</option>
-          <option ${data.status==='abgezogen'?'selected':''}>abgezogen</option>
-        </select></div>
-        <div class="mf"><label>Auf Karte (lat,lng)</label><input id="m-latlon" value="${data.lat&&data.lng?data.lat+', '+data.lng:''}" type="text"/></div>
-      </div>`,
-      save:async()=>{
-        const latlon=document.getElementById('m-latlon').value.split(',').map(x=>parseFloat(x.trim()));
-        await af(`/api/einsaetze/${eid}/kraefte/${data.id}`,{method:'PATCH',body:JSON.stringify({
-          staerke:parseInt(document.getElementById('m-staerke').value)||0,
-          funktion:document.getElementById('m-funktion').value,
-          fahrzeuge:document.getElementById('m-fahrzeuge').value,
-          ansprechpartner:document.getElementById('m-ap').value,
-          funk:document.getElementById('m-funk').value,
-          status:document.getElementById('m-status').value,
-          lat:latlon[0]||null,lng:latlon[1]||null})});
-        closeModal();loadKraefte();toast('✅ Einheit aktualisiert','',false);
-      }
-    },
-    'abschnitt':{
-      title:'ABSCHNITT ANLEGEN',
-      body:`<div class="mg3">
-        <div class="mf"><label>Nummer</label><input id="m-nr" type="text" placeholder="A1" value="A${abschnitte.length+1}"/></div>
-        <div class="mf"><label>Bezeichnung</label><input id="m-bez" type="text" placeholder="Brandbekämpfung"/></div>
-        <div class="mf"><label>Status</label><select id="m-status"><option>aktiv</option><option>wartend</option><option>abgeschlossen</option></select></div>
-      </div>
-      <div class="mf"><label>Aufgabe / Auftrag</label><input id="m-aufg" type="text" placeholder="Primärauftrag des Abschnitts"/></div>
-      <div style="font-family:var(--fm);font-size:.6rem;color:var(--yd);margin:8px 0 4px;text-transform:uppercase;letter-spacing:2px">Abschnittsleiter</div>
-      <div class="mg3">
-        <div class="mf"><label>Name</label><input id="m-alname" type="text" placeholder="Name, Dienstgrad"/></div>
-        <div class="mf"><label>Funk</label><input id="m-alfunk" type="text" placeholder="Funkrufname"/></div>
-        <div class="mf"><label>Telefon</label><input id="m-altel" type="text" placeholder="+49 …"/></div>
-      </div>
-      <div class="mg2">
-        <div class="mf"><label>Stärke (Pers.)</label><input id="m-staerke" type="number" min="0" value="0"/></div>
-        <div class="mf"><label>Position auf Karte (lat,lng)</label><input id="m-latlon" type="text" placeholder="48.473, 7.941"/></div>
-      </div>`,
-      save:async()=>{
-        const latlon=document.getElementById('m-latlon').value.split(',').map(x=>parseFloat(x.trim()));
-        await af(`/api/einsaetze/${eid}/abschnitte`,{method:'POST',body:JSON.stringify({
-          nummer:document.getElementById('m-nr').value,
-          bezeichnung:document.getElementById('m-bez').value,
-          aufgabe:document.getElementById('m-aufg').value,
-          status:document.getElementById('m-status').value,
-          abschnittsleiter_name:document.getElementById('m-alname').value,
-          abschnittsleiter_funk:document.getElementById('m-alfunk').value,
-          abschnittsleiter_tel:document.getElementById('m-altel').value,
-          staerke:parseInt(document.getElementById('m-staerke').value)||0,
-          lat:latlon[0]||null,lng:latlon[1]||null})});
-        closeModal();toast('✅ Abschnitt angelegt','',false);
-      }
-    },
-    'abschnitt-edit':{
-      title:'ABSCHNITT BEARBEITEN',
-      body:`<div class="mg3">
-        <div class="mf"><label>Nummer</label><input id="m-nr" value="${data.nummer||''}" type="text"/></div>
-        <div class="mf"><label>Bezeichnung</label><input id="m-bez" value="${data.bezeichnung||''}" type="text"/></div>
-        <div class="mf"><label>Status</label><select id="m-status">
-          <option ${data.status==='aktiv'?'selected':''}>aktiv</option>
-          <option ${data.status==='wartend'?'selected':''}>wartend</option>
-          <option ${data.status==='abgeschlossen'?'selected':''}>abgeschlossen</option>
-        </select></div>
-      </div>
-      <div class="mf"><label>Aufgabe</label><input id="m-aufg" value="${data.aufgabe||''}" type="text"/></div>
-      <div style="font-family:var(--fm);font-size:.6rem;color:var(--yd);margin:8px 0 4px;text-transform:uppercase;letter-spacing:2px">Abschnittsleiter</div>
-      <div class="mg3">
-        <div class="mf"><label>Name</label><input id="m-alname" value="${data.abschnittsleiter_name||''}" type="text"/></div>
-        <div class="mf"><label>Funk</label><input id="m-alfunk" value="${data.abschnittsleiter_funk||''}" type="text"/></div>
-        <div class="mf"><label>Telefon</label><input id="m-altel" value="${data.abschnittsleiter_tel||''}" type="text"/></div>
-      </div>
-      <div class="mg2">
-        <div class="mf"><label>Stärke</label><input id="m-staerke" type="number" value="${data.staerke||0}"/></div>
-        <div class="mf"><label>Position (lat,lng)</label><input id="m-latlon" value="${data.lat&&data.lng?data.lat+', '+data.lng:''}" type="text"/></div>
-      </div>`,
-      save:async()=>{
-        const latlon=document.getElementById('m-latlon').value.split(',').map(x=>parseFloat(x.trim()));
-        await af(`/api/einsaetze/${eid}/abschnitte/${data.id}`,{method:'PATCH',body:JSON.stringify({
-          bezeichnung:document.getElementById('m-bez').value,aufgabe:document.getElementById('m-aufg').value,
-          status:document.getElementById('m-status').value,
-          abschnittsleiter_name:document.getElementById('m-alname').value,
-          abschnittsleiter_funk:document.getElementById('m-alfunk').value,
-          abschnittsleiter_tel:document.getElementById('m-altel').value,
-          staerke:parseInt(document.getElementById('m-staerke').value)||0,
-          lat:latlon[0]||null,lng:latlon[1]||null})});
-        closeModal();loadAbschnitte();toast('✅ Abschnitt aktualisiert','',false);
-      }
-    },
-    'schadensstelle':{
-      title:'SCHADENSSTELLE ERFASSEN',
-      body:`<div class="mg2">
-        <div class="mf"><label>Typ</label><select id="m-typ"><option>Schadensstelle</option><option>Brand</option><option>Einsturz</option><option>Überflutung</option><option>Verletzt</option><option>Vermisst</option><option>Gefahrgut</option></select></div>
-        <div class="mf"><label>Schwere</label><select id="m-schwere"><option>leicht</option><option selected>mittel</option><option>schwer</option><option>kritisch</option></select></div>
-      </div>
-      <div class="mf"><label>Bezeichnung</label><input id="m-bez" type="text" placeholder="z. B. Einsturz Hauptstraße 12"/></div>
-      <div class="mf"><label>Beschreibung</label><textarea id="m-beschr" style="min-height:60px" placeholder="Lage, Umfang, Besonderheiten …"></textarea></div>
-      <div class="mg3">
-        <div class="mf"><label>Breitengrad (lat)</label><input id="m-lat" value="${data.lat||''}" type="number" step="0.0001"/></div>
-        <div class="mf"><label>Längengrad (lng)</label><input id="m-lng" value="${data.lng||''}" type="number" step="0.0001"/></div>
-        <div class="mf"><label>Radius (m, 0=Punkt)</label><input id="m-rad" type="number" min="0" value="0"/></div>
-      </div>
-      <div class="mf"><label>Abschnitt</label><select id="m-abschnitt"><option value="">– kein –</option>${abschnitte.map(a=>`<option value="${a.id}">${a.nummer} ${a.bezeichnung}</option>`).join('')}</select></div>`,
-      save:async()=>{
-        await af(`/api/einsaetze/${eid}/schadensstellen`,{method:'POST',body:JSON.stringify({
-          typ:document.getElementById('m-typ').value,
-          bezeichnung:document.getElementById('m-bez').value,
-          beschreibung:document.getElementById('m-beschr').value,
-          schwere:document.getElementById('m-schwere').value,
-          lat:parseFloat(document.getElementById('m-lat').value),
-          lng:parseFloat(document.getElementById('m-lng').value),
-          radius_m:parseInt(document.getElementById('m-rad').value)||0,
-          abschnitt_id:document.getElementById('m-abschnitt').value||null})});
-        closeModal();mapMode=null;document.getElementById('btn-add-ss').classList.remove('active');
-        toast('✅ Schadensstelle erfasst','Auf Karte sichtbar',false);
-      }
-    },
-    'bereich':{
-      title:'BETROFFENEN BEREICH ERFASSEN',
-      body:`<div class="mg2">
-        <div class="mf"><label>Bezeichnung</label><input id="m-bez" type="text" placeholder="Überflutungszone Nord"/></div>
-        <div class="mf"><label>Typ</label><select id="m-typ"><option>Überflutung</option><option>Sperrzone</option><option>Evakuierungszone</option><option>Gefahrzone</option><option>BSR</option></select></div>
-      </div>
-      <div class="mf"><label>Beschreibung</label><input id="m-beschr" type="text" placeholder="Betroffene Straßen, Gebäude …"/></div>
-      <div class="mf"><label>Farbe</label><select id="m-farbe"><option value="#1A5FA8">Blau (Überflutung)</option><option value="#C8000A">Rot (Gefahrzone)</option><option value="#E07B00">Orange (Evakuierung)</option><option value="#1A8A3C">Grün (BSR)</option></select></div>
-      <div style="font-family:var(--fm);font-size:.6rem;color:var(--t2);margin-top:6px">GeoJSON: ${data.geo_json?'✅ '+JSON.parse(data.geo_json||'{}').type+' erfasst':'Auf Karte gezeichnet'}</div>`,
-      save:async()=>{
-        await af(`/api/einsaetze/${eid}/bereiche`,{method:'POST',body:JSON.stringify({
-          bezeichnung:document.getElementById('m-bez').value,
-          typ:document.getElementById('m-typ').value,
-          beschreibung:document.getElementById('m-beschr').value,
-          farbe:document.getElementById('m-farbe').value,
-          geo_json:data.geo_json||''})});
-        closeModal();toast('✅ Bereich erfasst','Auf Karte sichtbar',false);
-      }
-    },
-    'meldung':{
-      title:'MELDUNG ERSTELLEN',
-      body:`<div class="mg2">
-        <div class="mf"><label>Typ</label><select id="m-typ"><option>Lagemeldung</option><option>Pressemitteilung</option><option>Bürgerinformation</option><option>Anforderung</option><option>Rückmeldung</option></select></div>
-        <div class="mf"><label>Empfänger</label><input id="m-emp" type="text" placeholder="Übergeordnete Führungsstelle, Presse …"/></div>
-      </div>
-      <div class="mf"><label>Inhalt</label><textarea id="m-inh" style="min-height:100px"></textarea></div>`,
-      save:async()=>{
-        await af(`/api/einsaetze/${eid}/meldungen`,{method:'POST',body:JSON.stringify({
-          typ:document.getElementById('m-typ').value,
-          empfaenger:document.getElementById('m-emp').value,
-          inhalt:document.getElementById('m-inh').value})});
-        closeModal();loadMeldungen();toast('✅ Meldung gespeichert','',false);
-      }
-    },
-    'meldung-ki':{
-      title:'MELDUNG KI GENERIEREN',
-      body:`<div class="mg2">
-        <div class="mf"><label>Typ</label><select id="m-typ"><option>Lagemeldung</option><option>Pressemitteilung</option><option>Bürgerinformation</option><option>Anforderung</option><option>MANV-Meldung</option></select></div>
-        <div class="mf"><label>Empfänger</label><input id="m-emp" type="text" value="Übergeordnete Führungsstelle" type="text"/></div>
-      </div>
-      <div style="font-family:var(--fm);font-size:.6rem;color:var(--t2);margin-top:6px">KI generiert die Meldung basierend auf dem aktuellen Lagestand.</div>`,
-      save:async()=>{
-        toast('⏳ KI generiert …','');
-        const r=await af(`/api/einsaetze/${eid}/meldungen/generieren`,{method:'POST',body:JSON.stringify({
-          typ:document.getElementById('m-typ').value,
-          empfaenger:document.getElementById('m-emp').value})});
-        if(r.ok){closeModal();loadMeldungen();toast('✅ Meldung generiert','',false)}
-        else toast('Fehler','KI-Generierung fehlgeschlagen',true);
-      }
-    },
+    'tb':{title:'TAGEBUCHEINTRAG',
+      body:`<div class="mg2"><div class="mf"><label>Kategorie</label><select id="m-kat"><option>Lage</option><option>Maßnahme</option><option>Meldung</option><option>Vordruck</option></select></div><div class="mf"><label>Priorität</label><select id="m-prio"><option>normal</option><option>hoch</option><option>kritisch</option></select></div></div><div class="mg2"><div class="mf"><label>Betreff</label><input id="m-betr" type="text"/></div><div class="mf"><label>An / Empfänger</label><input id="m-an" type="text" placeholder="Stab, EL, BSR …"/></div></div><div class="mf"><label>Inhalt *</label><textarea id="m-inh"></textarea></div>`,
+      save:async()=>{const inh=document.getElementById('m-inh').value.trim();if(!inh)return;await af(`/api/einsaetze/${eid}/tagebuch`,{method:'POST',body:JSON.stringify({kategorie:document.getElementById('m-kat').value,prioritaet:document.getElementById('m-prio').value,betreff:document.getElementById('m-betr').value,inhalt:inh,an:document.getElementById('m-an').value})});closeModal();loadTB();toast('✅ Eintrag gespeichert','',false)}},
+    'kraft':{title:'EINHEIT ERFASSEN',
+      body:`<div class="mg3"><div class="mf"><label>Organisation</label><select id="m-org"><option>FW</option><option>RD</option><option>THW</option><option>Pol</option><option>BW</option><option>Sonstige</option></select></div><div class="mf"><label>Einheit</label><input id="m-einheit" type="text" placeholder="FF Offenburg"/></div><div class="mf"><label>Stärke (Pers.)</label><input id="m-staerke" type="number" min="0" value="0"/></div></div><div class="mg2"><div class="mf"><label>Funktion / Auftrag</label><input id="m-funktion" type="text" placeholder="Bergung A1"/></div><div class="mf"><label>Fahrzeuge</label><input id="m-fahrzeuge" type="text" placeholder="2×HLF, 1×DLK"/></div></div><div class="mg2"><div class="mf"><label>Ansprechpartner</label><input id="m-ap" type="text" placeholder="Name, Dienstgrad"/></div><div class="mf"><label>Funkrufname</label><input id="m-funk" type="text" placeholder="Florian Offenburg 1"/></div></div><div class="mg3"><div class="mf"><label>Status</label><select id="m-status"><option>im_einsatz</option><option>verfügbar</option><option>wartend</option><option>abgezogen</option></select></div><div class="mf"><label>Abschnitt</label><select id="m-abschnitt"><option value="">– kein –</option>${abschnitte.map(a=>`<option value="${a.id}">${a.nummer} ${a.bezeichnung}</option>`).join('')}</select></div><div class="mf"><label>Auf Karte (lat, lng)</label><input id="m-latlon" type="text" placeholder="48.473, 7.941"/></div></div>`,
+      save:async()=>{const ll=document.getElementById('m-latlon').value.split(',').map(x=>parseFloat(x.trim()));await af(`/api/einsaetze/${eid}/kraefte`,{method:'POST',body:JSON.stringify({organisation:document.getElementById('m-org').value,einheit:document.getElementById('m-einheit').value,staerke:parseInt(document.getElementById('m-staerke').value)||0,funktion:document.getElementById('m-funktion').value,fahrzeuge:document.getElementById('m-fahrzeuge').value,ansprechpartner:document.getElementById('m-ap').value,funk:document.getElementById('m-funk').value,status:document.getElementById('m-status').value,abschnitt_id:document.getElementById('m-abschnitt').value||null,lat:ll[0]||null,lng:ll[1]||null})});closeModal();toast('✅ Einheit erfasst','',false)}},
+    'kraft-edit':{title:'EINHEIT BEARBEITEN',
+      body:`<div class="mg3"><div class="mf"><label>Organisation</label><select id="m-org"><option ${data.organisation==='FW'?'selected':''}>FW</option><option ${data.organisation==='RD'?'selected':''}>RD</option><option ${data.organisation==='THW'?'selected':''}>THW</option><option>Pol</option><option>Sonstige</option></select></div><div class="mf"><label>Einheit</label><input id="m-einheit" value="${data.einheit||''}" type="text"/></div><div class="mf"><label>Stärke</label><input id="m-staerke" type="number" value="${data.staerke||0}"/></div></div><div class="mg2"><div class="mf"><label>Funktion</label><input id="m-funktion" value="${data.funktion||''}" type="text"/></div><div class="mf"><label>Fahrzeuge</label><input id="m-fahrzeuge" value="${data.fahrzeuge||''}" type="text"/></div></div><div class="mg2"><div class="mf"><label>Ansprechpartner</label><input id="m-ap" value="${data.ansprechpartner||''}" type="text"/></div><div class="mf"><label>Funk</label><input id="m-funk" value="${data.funk||''}" type="text"/></div></div><div class="mg2"><div class="mf"><label>Status</label><select id="m-status"><option ${data.status==='im_einsatz'?'selected':''}>im_einsatz</option><option ${data.status==='verfügbar'?'selected':''}>verfügbar</option><option ${data.status==='wartend'?'selected':''}>wartend</option><option ${data.status==='abgezogen'?'selected':''}>abgezogen</option></select></div><div class="mf"><label>Auf Karte (lat, lng)</label><input id="m-latlon" value="${data.lat&&data.lng?data.lat+', '+data.lng:''}" type="text"/></div></div>`,
+      save:async()=>{const ll=document.getElementById('m-latlon').value.split(',').map(x=>parseFloat(x.trim()));await af(`/api/einsaetze/${eid}/kraefte/${data.id}`,{method:'PATCH',body:JSON.stringify({staerke:parseInt(document.getElementById('m-staerke').value)||0,funktion:document.getElementById('m-funktion').value,fahrzeuge:document.getElementById('m-fahrzeuge').value,ansprechpartner:document.getElementById('m-ap').value,funk:document.getElementById('m-funk').value,status:document.getElementById('m-status').value,lat:ll[0]||null,lng:ll[1]||null})});closeModal();loadKraefte();toast('✅ Aktualisiert','',false)}},
+    'abschnitt':{title:'ABSCHNITT ANLEGEN',
+      body:`<div class="mg3"><div class="mf"><label>Nummer</label><input id="m-nr" value="A${abschnitte.length+1}" type="text"/></div><div class="mf"><label>Bezeichnung</label><input id="m-bez" type="text" placeholder="Brandbekämpfung"/></div><div class="mf"><label>Status</label><select id="m-status"><option>aktiv</option><option>wartend</option><option>abgeschlossen</option></select></div></div><div class="mf"><label>Aufgabe / Auftrag</label><input id="m-aufg" type="text" placeholder="Primärauftrag"/></div><div style="font-family:var(--fm);font-size:.6rem;color:var(--yd);margin:8px 0 4px;text-transform:uppercase;letter-spacing:2px">Abschnittsleiter</div><div class="mg3"><div class="mf"><label>Name</label><input id="m-alname" type="text" placeholder="Name, Dienstgrad"/></div><div class="mf"><label>Funk</label><input id="m-alfunk" type="text" placeholder="Funkrufname"/></div><div class="mf"><label>Telefon</label><input id="m-altel" type="text" placeholder="+49 …"/></div></div><div class="mg2"><div class="mf"><label>Stärke (Pers.)</label><input id="m-staerke" type="number" value="0"/></div><div class="mf"><label>Position (lat, lng)</label><input id="m-latlon" type="text" placeholder="48.473, 7.941"/></div></div>`,
+      save:async()=>{const ll=document.getElementById('m-latlon').value.split(',').map(x=>parseFloat(x.trim()));await af(`/api/einsaetze/${eid}/abschnitte`,{method:'POST',body:JSON.stringify({nummer:document.getElementById('m-nr').value,bezeichnung:document.getElementById('m-bez').value,aufgabe:document.getElementById('m-aufg').value,status:document.getElementById('m-status').value,abschnittsleiter_name:document.getElementById('m-alname').value,abschnittsleiter_funk:document.getElementById('m-alfunk').value,abschnittsleiter_tel:document.getElementById('m-altel').value,staerke:parseInt(document.getElementById('m-staerke').value)||0,lat:ll[0]||null,lng:ll[1]||null})});closeModal();toast('✅ Abschnitt angelegt','',false)}},
+    'abschnitt-edit':{title:'ABSCHNITT BEARBEITEN',
+      body:`<div class="mg3"><div class="mf"><label>Nummer</label><input id="m-nr" value="${data.nummer||''}" type="text"/></div><div class="mf"><label>Bezeichnung</label><input id="m-bez" value="${data.bezeichnung||''}" type="text"/></div><div class="mf"><label>Status</label><select id="m-status"><option ${data.status==='aktiv'?'selected':''}>aktiv</option><option ${data.status==='wartend'?'selected':''}>wartend</option><option ${data.status==='abgeschlossen'?'selected':''}>abgeschlossen</option></select></div></div><div class="mf"><label>Aufgabe</label><input id="m-aufg" value="${data.aufgabe||''}" type="text"/></div><div style="font-family:var(--fm);font-size:.6rem;color:var(--yd);margin:8px 0 4px;text-transform:uppercase;letter-spacing:2px">Abschnittsleiter</div><div class="mg3"><div class="mf"><label>Name</label><input id="m-alname" value="${data.abschnittsleiter_name||''}" type="text"/></div><div class="mf"><label>Funk</label><input id="m-alfunk" value="${data.abschnittsleiter_funk||''}" type="text"/></div><div class="mf"><label>Telefon</label><input id="m-altel" value="${data.abschnittsleiter_tel||''}" type="text"/></div></div><div class="mg2"><div class="mf"><label>Stärke</label><input id="m-staerke" type="number" value="${data.staerke||0}"/></div><div class="mf"><label>Position (lat, lng)</label><input id="m-latlon" value="${data.lat&&data.lng?data.lat+', '+data.lng:''}" type="text"/></div></div>`,
+      save:async()=>{const ll=document.getElementById('m-latlon').value.split(',').map(x=>parseFloat(x.trim()));await af(`/api/einsaetze/${eid}/abschnitte/${data.id}`,{method:'PATCH',body:JSON.stringify({bezeichnung:document.getElementById('m-bez').value,aufgabe:document.getElementById('m-aufg').value,status:document.getElementById('m-status').value,abschnittsleiter_name:document.getElementById('m-alname').value,abschnittsleiter_funk:document.getElementById('m-alfunk').value,abschnittsleiter_tel:document.getElementById('m-altel').value,staerke:parseInt(document.getElementById('m-staerke').value)||0,lat:ll[0]||null,lng:ll[1]||null})});closeModal();loadAbschnitte();loadEinsatzMarkers();toast('✅ Aktualisiert','',false)}},
+    'schadensstelle':{title:'SCHADENSSTELLE ERFASSEN',
+      body:`<div class="mg2"><div class="mf"><label>Typ</label><select id="m-typ"><option>Schadensstelle</option><option>Brand</option><option>Einsturz</option><option>Überflutung</option><option>Verletzt</option><option>Vermisst</option><option>Gefahrgut</option></select></div><div class="mf"><label>Schwere</label><select id="m-schwere"><option>leicht</option><option selected>mittel</option><option>schwer</option><option>kritisch</option></select></div></div><div class="mf"><label>Bezeichnung</label><input id="m-bez" type="text" placeholder="z. B. Einsturz Hauptstraße 12"/></div><div class="mf"><label>Beschreibung</label><textarea id="m-beschr" style="min-height:60px" placeholder="Lage, Umfang, Besonderheiten …"></textarea></div><div class="mg3"><div class="mf"><label>Breitengrad (lat)</label><input id="m-lat" value="${data.lat||''}" type="number" step="0.0001"/></div><div class="mf"><label>Längengrad (lng)</label><input id="m-lng" value="${data.lng||''}" type="number" step="0.0001"/></div><div class="mf"><label>Radius (m, 0=Punkt)</label><input id="m-rad" type="number" min="0" value="0"/></div></div><div class="mf"><label>Abschnitt</label><select id="m-abschnitt"><option value="">– kein –</option>${abschnitte.map(a=>`<option value="${a.id}">${a.nummer} ${a.bezeichnung}</option>`).join('')}</select></div>`,
+      save:async()=>{const lat=parseFloat(document.getElementById('m-lat').value),lng=parseFloat(document.getElementById('m-lng').value);if(!lat||!lng){alert('Koordinaten erforderlich!');return}await af(`/api/einsaetze/${eid}/schadensstellen`,{method:'POST',body:JSON.stringify({typ:document.getElementById('m-typ').value,bezeichnung:document.getElementById('m-bez').value,beschreibung:document.getElementById('m-beschr').value,schwere:document.getElementById('m-schwere').value,lat,lng,radius_m:parseInt(document.getElementById('m-rad').value)||0,abschnitt_id:document.getElementById('m-abschnitt').value||null})});closeModal();mapMode=null;document.getElementById('btn-add-ss').classList.remove('active-mode');loadEinsatzMarkers();toast('✅ Schadensstelle erfasst','Auf Karte sichtbar',false)}},
+    'bereich':{title:'BETROFFENEN BEREICH ERFASSEN',
+      body:`<div class="mg2"><div class="mf"><label>Bezeichnung</label><input id="m-bez" type="text" placeholder="Überflutungszone Nord"/></div><div class="mf"><label>Typ</label><select id="m-typ"><option>Überflutung</option><option>Sperrzone</option><option>Evakuierungszone</option><option>Gefahrzone</option><option>BSR</option></select></div></div><div class="mf"><label>Beschreibung</label><input id="m-beschr" type="text" placeholder="Betroffene Straßen, Gebäude …"/></div><div class="mf"><label>Farbe</label><select id="m-farbe"><option value="#1A5FA8">Blau (Überflutung)</option><option value="#C8000A">Rot (Gefahrzone)</option><option value="#E07B00">Orange (Evakuierung)</option><option value="#1A8A3C">Grün (BSR)</option></select></div><div style="font-family:var(--fm);font-size:.6rem;color:${data.geo_json?'var(--gl)':'var(--t2)'};margin-top:6px">${data.geo_json?'✅ Polygon erfasst ('+JSON.parse(data.geo_json||'{}').type+')':'⚠ Kein Polygon – auf Karte zeichnen und Doppelklick zum Abschließen'}</div>`,
+      save:async()=>{await af(`/api/einsaetze/${eid}/bereiche`,{method:'POST',body:JSON.stringify({bezeichnung:document.getElementById('m-bez').value,typ:document.getElementById('m-typ').value,beschreibung:document.getElementById('m-beschr').value,farbe:document.getElementById('m-farbe').value,geo_json:data.geo_json||''})});closeModal();mapMode=null;document.getElementById('btn-add-bereich').classList.remove('active-mode');toast('✅ Bereich erfasst','Auf Karte sichtbar',false)}},
+    'meldung':{title:'MELDUNG ERSTELLEN',
+      body:`<div class="mg2"><div class="mf"><label>Typ</label><select id="m-typ"><option>Lagemeldung</option><option>Pressemitteilung</option><option>Bürgerinformation</option><option>Anforderung</option><option>Rückmeldung</option></select></div><div class="mf"><label>Empfänger</label><input id="m-emp" type="text" placeholder="Übergeordnete Führungsstelle …"/></div></div><div class="mf"><label>Inhalt</label><textarea id="m-inh" style="min-height:100px"></textarea></div>`,
+      save:async()=>{await af(`/api/einsaetze/${eid}/meldungen`,{method:'POST',body:JSON.stringify({typ:document.getElementById('m-typ').value,empfaenger:document.getElementById('m-emp').value,inhalt:document.getElementById('m-inh').value})});closeModal();loadMeldungen();toast('✅ Meldung gespeichert','',false)}},
+    'meldung-ki':{title:'MELDUNG KI GENERIEREN',
+      body:`<div class="mg2"><div class="mf"><label>Typ</label><select id="m-typ"><option>Lagemeldung</option><option>Pressemitteilung</option><option>Bürgerinformation</option><option>Anforderung</option><option>MANV-Meldung</option></select></div><div class="mf"><label>Empfänger</label><input id="m-emp" value="Übergeordnete Führungsstelle" type="text"/></div></div><div style="font-family:var(--fm);font-size:.6rem;color:var(--t2);margin-top:6px">KI generiert basierend auf aktuellem Lagestand. Als ENTWURF.</div>`,
+      save:async()=>{toast('⏳ KI generiert …','');const r=await af(`/api/einsaetze/${eid}/meldungen/generieren`,{method:'POST',body:JSON.stringify({typ:document.getElementById('m-typ').value,empfaenger:document.getElementById('m-emp').value})});if(r.ok){closeModal();loadMeldungen();toast('✅ Meldung generiert','',false)}else toast('Fehler','KI fehlgeschlagen',true)}},
   };
-  const cfg=configs[type];
-  if(!cfg)return;
+  const cfg=configs[type];if(!cfg)return;
   document.getElementById('modal-title').textContent=cfg.title;
   document.getElementById('modal-body').innerHTML=cfg.body;
   document.getElementById('modal-foot').innerHTML=`<button class="btn-save" onclick="currentModalSave()">SPEICHERN</button><button class="btn-cx" onclick="closeModal()">Abbrechen</button>`;
   currentModalSave=cfg.save;
   document.getElementById('mb').classList.add('vis');
 }
-
 function closeModal(){document.getElementById('mb').classList.remove('vis')}
 
-// ══════════ ÜBUNG ORTENAU ══════════════════════════════════════════
+// ── ÜBUNG ORTENAU ──────────────────────────────────────────────
 function loadOrtenau(){
   document.getElementById('f-stw').value='KAT – Katastrophe';
   document.getElementById('f-lsuf').value='MANV / Katastrophe';
@@ -1466,7 +1388,7 @@ function loadOrtenau(){
   document.getElementById('f-el').value='Landrat Ortenaukreis';
   document.getElementById('f-fuehrstelle').value='Badstrasse 20, 77652 Offenburg';
   document.getElementById('f-sl').value='Erdbeben Stärke 6,8 Richterskala, 01.10.XX 04:00 Uhr. Epizentrum ca. 18km SW Straßburg. Alle 51 Gemeinden betroffen. Ca. 650 Gebäude teileingestürzt, ca. 300 Totalzusammenbrüche. Dammbruch Staustufe Gambsheim: 830m³/s Ausfluss, Rheinau und Freistätt überflutet.';
-  document.getElementById('f-gl').value='Stromausfall gesamter Ortenaukreis. A5 Achern–Herbolzheim blockiert. B3/B28/B294/B500 gesperrt. Harmersbachtal ohne Außenverbindung. Lageentwicklung: eskalierend.';
+  document.getElementById('f-gl').value='Stromausfall gesamter Ortenaukreis. A5 Achern–Herbolzheim blockiert. B3/B28/B294/B500 gesperrt. Harmersbachtal ohne Außenverbindung. Eskalierend.';
   document.getElementById('f-tote').value='300';document.getElementById('f-verl').value='5000';
   document.getElementById('f-versch').value='500';document.getElementById('f-obdach').value='70000';
   document.getElementById('f-vermisst').value='200';
@@ -1479,27 +1401,23 @@ function loadOrtenau(){
   });
   document.querySelectorAll('input[name="out"]').forEach(cb=>cb.checked=true);
   setStatus('✅ Übungsszenario Ortenau geladen','done');
-  toast('📂 Ortenau geladen','Klick auf EINSATZ ANLEGEN + KI-ANALYSE');
+  toast('📂 Ortenau geladen','→ EINSATZ ANLEGEN + KI-ANALYSE STARTEN');
 }
 
-// ══════════ AUTO-LOGIN ════════════════════════════════════════════
+// ── AUTO-LOGIN ─────────────────────────────────────────────────
 token=localStorage.getItem('s2t')||'';
 user=JSON.parse(localStorage.getItem('s2u')||'{}');
 eid=parseInt(localStorage.getItem('s2eid')||'1');
 
-// Beamer-Modus über URL-Parameter
-const urlParams=new URLSearchParams(window.location.search);
-const beamerToken=urlParams.get('beamer');
-if(beamerToken){
-  // Beamer-Login ohne Passwort
-  fetch(`${BASE}/api/auth/beamer/${beamerToken}`)
-    .then(r=>r.ok?r.json():null).then(d=>{
-      if(d){token=d.access_token;user=d.user;eid=d.einsatz_id;startApp();
-             document.querySelectorAll('.ttab').forEach(b=>{if(!b.textContent.includes('Beamer')&&!b.textContent.includes('Lagekarte'))b.style.display='none'});
-             sp('bm',document.querySelector('.ttab:nth-last-child(1)'));}
-    }).catch(()=>{});
-}
-else if(token&&user.username){
+const urlP=new URLSearchParams(window.location.search);
+const beamerTok=urlP.get('beamer');
+if(beamerTok){
+  fetch(`${BASE}/api/auth/beamer/${beamerTok}`).then(r=>r.ok?r.json():null).then(d=>{
+    if(d){token=d.access_token;user=d.user;eid=d.einsatz_id;startApp();
+      document.querySelectorAll('.ttab').forEach(b=>{if(!['📺 Beamer','🗺 Lagekarte'].some(t=>b.textContent.includes(t)))b.style.display='none'});
+      setTimeout(()=>sp('bm',document.querySelector('.ttab:last-child')),500);}
+  }).catch(()=>{});
+}else if(token&&user.username){
   fetch(BASE+'/health').then(r=>{if(r.ok)startApp();else localStorage.removeItem('s2t')}).catch(()=>{});
 }
 </script>
