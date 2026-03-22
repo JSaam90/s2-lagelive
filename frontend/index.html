@@ -21,6 +21,14 @@
   --t0:#FFF;--t1:#C0D0E0;--t2:#607080;--t3:#384858;
   --fh:'Bebas Neue',sans-serif;--fm:'IBM Plex Mono',monospace;--fb:'IBM Plex Sans',sans-serif;
 }
+.theme-light{
+  --bg:#F0F2F5;--p1:#FFFFFF;--p2:#F5F6F8;--p3:#ECEEF2;
+  --bd:#D0D5DD;--bdh:#B0B8C4;
+  --t0:#111827;--t1:#374151;--t2:#6B7280;--t3:#9CA3AF;
+}
+.theme-light .leaflet-tile{filter:none}
+.theme-light #ticker{background:#7A0006}
+.theme-light .b-stripe{opacity:.8}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);color:var(--t1);overflow:hidden}
 /* LOGIN */
@@ -297,12 +305,14 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
       <button class="btab" onclick="sp('analyse',this)">Analysen</button>
       <button class="btab" onclick="sp('ein',this)">Eingabe</button>
       <button class="btab" onclick="sp('bm',this)">Beamer</button>
+      <button class="btab" id="tab-dash" onclick="sp('dash',this)">Dashboard</button>
       <button class="btab" id="tab-admin" style="display:none" onclick="sp('admin',this)">Admin</button>
     </div>
     <div class="b-right">
       <span><span class="ldot"></span><span id="udisp" style="font-family:var(--fm);font-size:.58rem;color:var(--t2)">–</span></span>
       <div id="rb">–</div>
       <span id="clk" style="font-family:var(--fm);font-size:.6rem;color:var(--t2)">––:––</span>
+      <button class="logout" onclick="toggleTheme()" id="theme-btn" title="Hell/Dunkel">🌙</button>
       <button class="logout" onclick="doLogout()">Ab</button>
     </div>
   </div>
@@ -335,20 +345,35 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
             <button class="lpb on" id="lb-ab" onclick="toggleEL('ab')"><span class="lpdot" style="background:#FFD100"></span>Abschnitte<span class="lpcnt" id="lc-ab">0</span></button>
             <button class="lpb on" id="lb-fh" onclick="toggleEL('fh')"><span class="lpdot" style="background:#7B3DB8"></span>Freihand<span class="lpcnt" id="lc-fh">0</span></button>
           </div>
-          <div class="lpg"><div class="lpgt">Infrastruktur</div>
+          <div class="lpg"><div class="lpgt">Medizin</div>
             <button class="lpb" id="lb-kh" onclick="fetchOvp('kh')"><span id="ls-kh" class="lpspin" style="display:none"></span><span class="lpdot" style="background:#1A5FA8"></span>Krankenhäuser<span class="lpcnt" id="lc-kh">–</span></button>
+            <button class="lpb" id="lb-arzt" onclick="fetchOvp('arzt')"><span class="lpdot" style="background:#2B7FD4"></span>Arztpraxen<span class="lpcnt" id="lc-arzt">–</span></button>
+            <button class="lpb" id="lb-ah" onclick="fetchOvp('ah')"><span class="lpdot" style="background:#9B59B6"></span>Altenheime<span class="lpcnt" id="lc-ah">–</span></button>
+            <button class="lpb" id="lb-apo" onclick="fetchOvp('apo')"><span class="lpdot" style="background:#16A085"></span>Apotheken<span class="lpcnt" id="lc-apo">–</span></button>
+          </div>
+          <div class="lpg"><div class="lpgt">Einsatzkräfte</div>
             <button class="lpb" id="lb-fw" onclick="fetchOvp('fw')"><span class="lpdot" style="background:#C8000A"></span>Feuerwachen<span class="lpcnt" id="lc-fw">–</span></button>
             <button class="lpb" id="lb-rw" onclick="fetchOvp('rw')"><span class="lpdot" style="background:#22B84E"></span>Rettungswachen<span class="lpcnt" id="lc-rw">–</span></button>
-            <button class="lpb" id="lb-sk" onclick="fetchOvp('sk')"><span class="lpdot" style="background:#1A8A3C"></span>Schulen/Sammelst.<span class="lpcnt" id="lc-sk">–</span></button>
-            <button class="lpb" id="lb-ts" onclick="fetchOvp('ts')"><span class="lpdot" style="background:#B89500"></span>Tankstellen<span class="lpcnt" id="lc-ts">–</span></button>
-            <button class="lpb" id="lb-st" onclick="fetchOvp('st')"><span class="lpdot" style="background:#FFD100"></span>Strom/KRITIS<span class="lpcnt" id="lc-st">–</span></button>
+            <button class="lpb" id="lb-pol" onclick="fetchOvp('pol')"><span class="lpdot" style="background:#1A3FA8"></span>Polizei<span class="lpcnt" id="lc-pol">–</span></button>
           </div>
-          <div class="lpg" style="padding:3px 6px 5px"><button class="lpb" style="width:100%;justify-content:center;font-size:.55rem" onclick="loadAllOvp()">Alle laden</button></div>
+          <div class="lpg"><div class="lpgt">Soziales</div>
+            <button class="lpb" id="lb-kita" onclick="fetchOvp('kita')"><span class="lpdot" style="background:#E67E22"></span>Kitas<span class="lpcnt" id="lc-kita">–</span></button>
+            <button class="lpb" id="lb-sk" onclick="fetchOvp('sk')"><span class="lpdot" style="background:#1A8A3C"></span>Schulen/Sammelst.<span class="lpcnt" id="lc-sk">–</span></button>
+          </div>
+          <div class="lpg"><div class="lpgt">Versorgung</div>
+            <button class="lpb" id="lb-ts" onclick="fetchOvp('ts')"><span class="lpdot" style="background:#B89500"></span>Tankstellen<span class="lpcnt" id="lc-ts">–</span></button>
+            <button class="lpb" id="lb-sm" onclick="fetchOvp('sm')"><span class="lpdot" style="background:#27AE60"></span>Supermärkte<span class="lpcnt" id="lc-sm">–</span></button>
+          </div>
+          <div class="lpg"><div class="lpgt">KRITIS</div>
+            <button class="lpb" id="lb-st" onclick="fetchOvp('st')"><span class="lpdot" style="background:#FFD100"></span>Strom/Umspannw.<span class="lpcnt" id="lc-st">–</span></button>
+            <button class="lpb" id="lb-ww" onclick="fetchOvp('ww')"><span class="lpdot" style="background:#3498DB"></span>Wasserwerke<span class="lpcnt" id="lc-ww">–</span></button>
+          </div>
+          <div class="lpg" style="padding:3px 6px 5px"><button class="lpb" style="width:100%;justify-content:center;font-size:.55rem" onclick="loadAllOvp()">Alle laden (aktuell. Ausschnitt)</button></div>
         </div>
       </div>
       <div id="tz-panel">
         <div class="tzh">TAKT. ZEICHEN DV 102</div>
-        <div class="tzg"><div class="tzgt">Schadensstellen</div><div class="tzbtns" id="tzb-ss"></div></div>
+        <div class="tzg"><div class="tzgt">Schadenskonten DV 102</div><div class="tzbtns" id="tzb-ss"></div></div>
         <div class="tzg"><div class="tzgt">Kräfte &amp; Führung</div><div class="tzbtns" id="tzb-krf"></div></div>
         <div class="tzg"><div class="tzgt">Sonstiges / BSR</div><div class="tzbtns" id="tzb-son"></div></div>
         <div class="tzg"><div class="tzgt">Freihand zeichnen</div>
@@ -375,7 +400,7 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
 
     <!-- KRÄFTE -->
     <div class="panel" id="p-krf">
-      <div class="pbar"><span class="ptitle">KRÄFTEÜBERSICHT</span><button class="btn r" onclick="openModal('kraft')">+ Einheit</button><button class="btn" onclick="loadKraefte()">Laden</button><span id="krf-ges" style="margin-left:auto;font-family:var(--fm);font-size:.57rem;color:var(--t1)">–</span></div>
+      <div class="pbar"><span class="ptitle">KRÄFTEÜBERSICHT</span><button class="btn r" onclick="openModal('kraft')">+ Einheit</button><button class="btn" onclick="loadKraefte()">Laden</button><span style="font-family:var(--fm);font-size:.5rem;color:var(--t2)">Auf Karte ziehen →</span><span id="krf-ges" style="margin-left:auto;font-family:var(--fm);font-size:.57rem;color:var(--t1)">–</span></div>
       <div class="kfg" id="d-krf"><div style="color:var(--t2);font-style:italic;font-size:.76rem;padding:10px">Noch keine Kräfte. „+ Einheit" klicken.</div></div>
     </div>
 
@@ -503,6 +528,7 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
       <div id="ais">Bereit</div>
       <button class="bsub" id="bsub" onclick="runAnalysis()">EINSATZ ANLEGEN + KI-ANALYSE STARTEN</button>
       <button class="bload" onclick="loadOrtenau()">Übungsszenario Ortenau laden</button>
+      <button class="bload" style="margin-top:4px;border-color:var(--yel);color:var(--yel)" onclick="openModal('neuer_einsatz',{})">+ Neuen Einsatz anlegen</button>
     </div>
 
     <!-- BEAMER -->
@@ -520,6 +546,61 @@ html,body{height:100%;font-family:var(--fb);font-size:13px;background:var(--bg);
       <div class="bmtk" id="bm-tk">Warte auf Lage …</div>
       <div style="margin-top:8px;background:#111;border:1px solid #333;border-radius:4px;padding:9px;font-family:var(--fm);font-size:.66rem;color:#ccc;white-space:pre-wrap;max-height:260px;overflow-y:auto" id="bm-lv">–</div>
       <div style="margin-top:7px;font-family:var(--fm);font-size:.56rem;color:#555;text-align:center" id="bm-link">–</div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="panel" id="p-dash">
+      <div class="pbar">
+        <span class="ptitle">DASHBOARD</span>
+        <span style="font-family:var(--fm);font-size:.56rem;color:var(--t2)">Präsentationsansicht · Echtzeit</span>
+        <button class="btn" onclick="window.open(BASE+'/?beamer='+currentBeamerToken,'_blank')">Vollbild öffnen</button>
+        <button class="btn" onclick="loadDashboard()">Aktualisieren</button>
+      </div>
+      <div class="pscroll" id="dash-content" style="padding:0;background:var(--bg)">
+        <div id="dash-inner" style="padding:16px;display:flex;flex-direction:column;gap:14px">
+          <!-- Opferzahlen groß -->
+          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px">
+            <div class="dash-num cr"><div class="dn" id="dash-tote">0</div><div class="dl">Tote</div></div>
+            <div class="dash-num cr"><div class="dn" id="dash-versch">0</div><div class="dl">Verschüttet</div></div>
+            <div class="dash-num cr"><div class="dn" id="dash-verm">0</div><div class="dl">Vermisst</div></div>
+            <div class="dash-num wr"><div class="dn" id="dash-verl">0</div><div class="dl">Verletzt</div></div>
+            <div class="dash-num wr"><div class="dn" id="dash-obdach">0</div><div class="dl">Obdachlos</div></div>
+            <div class="dash-num ok"><div class="dn" id="dash-geret">0</div><div class="dl">Gerettet</div></div>
+          </div>
+          <!-- Status + Einsatz -->
+          <div style="display:grid;grid-template-columns:2fr 1fr;gap:10px">
+            <div style="background:var(--p1);border:1px solid var(--bd);border-radius:6px;padding:14px">
+              <div style="font-family:var(--fh);font-size:1.1rem;letter-spacing:4px;color:var(--yel);margin-bottom:8px" id="dash-stichwort">–</div>
+              <div style="font-size:.88rem;color:var(--t1);line-height:1.7;white-space:pre-wrap" id="dash-lage">Keine Lagebeschreibung.</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="background:var(--p1);border:1px solid var(--bd);border-radius:6px;padding:12px">
+                <div style="font-family:var(--fm);font-size:.52rem;color:var(--t2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px">Lagebesprechung</div>
+                <div style="font-family:var(--fh);font-size:1.8rem;letter-spacing:5px;color:var(--yel)" id="dash-timer">––:––</div>
+                <div style="font-family:var(--fm);font-size:.55rem;color:var(--t2);margin-top:3px" id="dash-lb-dt">–</div>
+              </div>
+              <div style="background:var(--p1);border:1px solid var(--bd);border-radius:6px;padding:12px">
+                <div style="font-family:var(--fm);font-size:.52rem;color:var(--t2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px">Kräfte</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap" id="dash-kraefte-sum"></div>
+              </div>
+              <div style="background:var(--p1);border:1px solid var(--bd);border-radius:6px;padding:12px">
+                <div style="font-family:var(--fm);font-size:.52rem;color:var(--t2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px">Lagestufe</div>
+                <div style="font-family:var(--fh);font-size:1rem;letter-spacing:3px;color:var(--rl)" id="dash-lsuf">–</div>
+              </div>
+            </div>
+          </div>
+          <!-- Letzte Einträge -->
+          <div style="background:var(--p1);border:1px solid var(--bd);border-radius:6px;overflow:hidden">
+            <div style="background:var(--p2);border-bottom:1px solid var(--bd);padding:7px 12px;font-family:var(--fh);font-size:.78rem;letter-spacing:3px;color:var(--t0)">LETZTE MELDUNGEN</div>
+            <div id="dash-meldungen" style="padding:8px 12px;display:flex;flex-direction:column;gap:4px;max-height:200px;overflow-y:auto"></div>
+          </div>
+          <!-- Abschnitte -->
+          <div style="background:var(--p1);border:1px solid var(--bd);border-radius:6px;overflow:hidden">
+            <div style="background:var(--p2);border-bottom:1px solid var(--bd);padding:7px 12px;font-family:var(--fh);font-size:.78rem;letter-spacing:3px;color:var(--t0)">ABSCHNITTE</div>
+            <div id="dash-abschnitte" style="padding:8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ADMIN -->
@@ -603,12 +684,19 @@ const TZK={
   ]
 };
 const OVP={
-  kh:{q:'node["amenity"="hospital"]',e:'🏥',c:'#1A5FA8',l:'Krankenhaus'},
-  fw:{q:'node["amenity"="fire_station"]',e:'🚒',c:'#C8000A',l:'Feuerwache'},
-  rw:{q:'node["emergency"="ambulance_station"]',e:'🚑',c:'#22B84E',l:'Rettungswache'},
-  sk:{q:'(node["amenity"="school"];node["amenity"="community_centre"];)',e:'🏫',c:'#1A8A3C',l:'Schule/Sammelst.'},
-  ts:{q:'node["amenity"="fuel"]',e:'⛽',c:'#B89500',l:'Tankstelle'},
-  st:{q:'(node["power"="substation"];node["power"="plant"];)',e:'⚡',c:'#FFD100',l:'Strom'},
+  kh: {q:'node["amenity"="hospital"]',e:'🏥',c:'#1A5FA8',l:'Krankenhaus'},
+  arzt:{q:'node["amenity"="doctors"]',e:'⚕️',c:'#2B7FD4',l:'Arztpraxis'},
+  ah:  {q:'(node["amenity"="nursing_home"];node["social_facility"~"nursing"];)',e:'🏠',c:'#9B59B6',l:'Altenheim'},
+  kita:{q:'(node["amenity"="kindergarten"];node["amenity"="childcare"];)',e:'🧒',c:'#E67E22',l:'Kita'},
+  fw:  {q:'node["amenity"="fire_station"]',e:'🚒',c:'#C8000A',l:'Feuerwache'},
+  rw:  {q:'node["emergency"="ambulance_station"]',e:'🚑',c:'#22B84E',l:'Rettungswache'},
+  pol: {q:'node["amenity"="police"]',e:'👮',c:'#1A3FA8',l:'Polizei'},
+  sk:  {q:'(node["amenity"="school"];node["amenity"="community_centre"];)',e:'🏫',c:'#1A8A3C',l:'Schule/Sammelst.'},
+  ts:  {q:'node["amenity"="fuel"]',e:'⛽',c:'#B89500',l:'Tankstelle'},
+  sm:  {q:'(node["shop"="supermarket"];node["shop"="convenience"];)',e:'🛒',c:'#27AE60',l:'Supermarkt'},
+  apo: {q:'node["amenity"="pharmacy"]',e:'💊',c:'#16A085',l:'Apotheke'},
+  st:  {q:'(node["power"="substation"];node["power"="plant"];)',e:'⚡',c:'#FFD100',l:'Strom/KRITIS'},
+  ww:  {q:'node["man_made"="water_works"]',e:'💧',c:'#3498DB',l:'Wasserwerk'},
 };
 
 /* ── UHRZEIT ────────────────────────────────────────────────── */
@@ -665,6 +753,7 @@ async function startApp(){
   if(user.role==='admin')document.getElementById('tab-admin').style.display='';
   if(['s5','presse','el','admin'].includes(user.role))document.getElementById('tab-s5').style.color='var(--yel)';
   buildTZPalette();
+  applyTheme();
   await loadEinsatz();
   connectWS();
   setTimeout(initMap,300);
@@ -749,6 +838,7 @@ function sp(id,btn){
   if(id==='tb')loadTB();if(id==='krf')loadKraefte();if(id==='fuehrung')loadAbschnitte();
   if(id==='lv')loadLagevortraege();if(id==='ml')loadMeldungen();if(id==='presse')loadPresse();
   if(id==='analyse')loadAnalyseberichte();if(id==='admin')loadAdmin();
+  if(id==='dash')loadDashboard();
 }
 
 /* ── KARTE ──────────────────────────────────────────────────── */
@@ -766,6 +856,7 @@ function initMap(){
   mapObj._drawControl=dc;
   mapObj.on(L.Draw.Event.CREATED,onDrawn);
   mapObj.on('click',onMapClick);
+  initMapDrop();
   mapObj.on('mousemove',e=>{document.getElementById('map-xy').textContent=`${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`});
   loadKarteServer();
 }
@@ -883,7 +974,8 @@ function renderKraefte(){
   el.innerHTML=kraefte.map(k=>{
     let c='ext';if(/fw|feuerwehr/i.test(k.organisation))c='fw';else if(/rd|rettung|drk/i.test(k.organisation))c='rd';else if(/thw/i.test(k.organisation))c='thw';
     const sc={im_einsatz:'g',verfügbar:'b',abgezogen:'r',wartend:'y'}[k.status]||'g';
-    return `<div class="kfc ${c}" onclick="openModal('kraft-edit',${JSON.stringify(k).replace(/"/g,'&quot;')})">
+    const kj=JSON.stringify(k).replace(/"/g,'&quot;');
+    return `<div class="kfc ${c}" draggable="true" data-kid="${k.id}" ondragstart="dragKraft(event,${k.id})" onclick="openModal('kraft-edit',${kj})">
       <div class="kfo">${{fw:'FW',rd:'RD',thw:'THW',ext:'Ext'}[c]}</div>
       <div class="kfn">${k.einheit||'–'}</div>
       <div class="kff">${k.funktion||'–'}</div>
@@ -1242,13 +1334,13 @@ function openModal(type,data={}){
       <div class="g3"><div class="mf"><label>Organisation</label><select id="m-org"><option>FW</option><option>RD</option><option>THW</option><option>Pol</option><option>BW</option><option>Sonstige</option></select></div><div class="mf"><label>Einheit</label><input id="m-einheit" type="text" placeholder="FF Offenburg"/></div><div class="mf"><label>Stärke (Pers.)</label><input id="m-staerke" type="number" min="0" value="0"/></div></div>
       <div class="g2"><div class="mf"><label>Funktion / Auftrag</label><input id="m-funk2" type="text" placeholder="Bergung A1"/></div><div class="mf"><label>Fahrzeuge</label><input id="m-fzg" type="text" placeholder="2×HLF, 1×DLK"/></div></div>
       <div class="g2"><div class="mf"><label>Ansprechpartner</label><input id="m-ap" type="text" placeholder="Name, Dienstgrad"/></div><div class="mf"><label>Funkrufname</label><input id="m-funk" type="text" placeholder="Florian OF 1"/></div></div>
-      <div class="g3"><div class="mf"><label>Status</label><select id="m-status"><option>im_einsatz</option><option>verfügbar</option><option>wartend</option><option>abgezogen</option></select></div><div class="mf"><label>Abschnitt</label><select id="m-ab">${[{id:'',bezeichnung:'– kein –'},...abschnitte].map(a=>`<option value="${a.id||''}">${a.nummer||''} ${a.bezeichnung||a.bezeichnung||'kein'}</option>`).join('')}</select></div><div class="mf"><label>Karte (lat, lng)</label><input id="m-ll" type="text" placeholder="48.473, 7.941"/></div></div>`,
+      <div class="g3"><div class="mf"><label>Status</label><select id="m-status"><option>im_einsatz</option><option>verfügbar</option><option>wartend</option><option>abgezogen</option></select></div><div class="mf"><label>Abschnitt</label><select id="m-ab"></select></div><div class="mf"><label>Karte (lat, lng)</label><input id="m-ll" type="text" placeholder="48.473, 7.941"/></div></div>`,
       s:async()=>{const ll=document.getElementById('m-ll').value.split(',').map(x=>parseFloat(x.trim()));await af(`/api/einsaetze/${eid}/kraefte`,{method:'POST',body:JSON.stringify({organisation:document.getElementById('m-org').value,einheit:document.getElementById('m-einheit').value,staerke:parseInt(document.getElementById('m-staerke').value)||0,funktion:document.getElementById('m-funk2').value,fahrzeuge:document.getElementById('m-fzg').value,ansprechpartner:document.getElementById('m-ap').value,funk:document.getElementById('m-funk').value,status:document.getElementById('m-status').value,abschnitt_id:document.getElementById('m-ab').value||null,lat:ll[0]||null,lng:ll[1]||null})});closeModal();toast('Einheit erfasst','',false)}},
     'kraft-edit':{t:'EINHEIT BEARBEITEN',b:`
-      <div class="g3"><div class="mf"><label>Org.</label><select id="m-org">${['FW','RD','THW','Pol','BW','Sonstige'].map(o=>`<option${o===data.organisation?' selected':''}>${o}</option>`).join('')}</select></div><div class="mf"><label>Einheit</label><input id="m-einheit" value="${data.einheit||''}" type="text"/></div><div class="mf"><label>Stärke</label><input id="m-staerke" type="number" value="${data.staerke||0}"/></div></div>
+      <div class="g3"><div class="mf"><label>Org.</label><select id="m-org"><option>FW</option><option>RD</option><option>THW</option><option>Pol</option><option>BW</option><option>Sonstige</option></select></div><div class="mf"><label>Einheit</label><input id="m-einheit" value="${data.einheit||''}" type="text"/></div><div class="mf"><label>Stärke</label><input id="m-staerke" type="number" value="${data.staerke||0}"/></div></div>
       <div class="g2"><div class="mf"><label>Funktion</label><input id="m-funk2" value="${data.funktion||''}" type="text"/></div><div class="mf"><label>Fahrzeuge</label><input id="m-fzg" value="${data.fahrzeuge||''}" type="text"/></div></div>
       <div class="g2"><div class="mf"><label>Ansprechpartner</label><input id="m-ap" value="${data.ansprechpartner||''}" type="text"/></div><div class="mf"><label>Funk</label><input id="m-funk" value="${data.funk||''}" type="text"/></div></div>
-      <div class="g2"><div class="mf"><label>Status</label><select id="m-status">${['im_einsatz','verfügbar','wartend','abgezogen'].map(s=>`<option${s===data.status?' selected':''}>${s}</option>`).join('')}</select></div><div class="mf"><label>Karte (lat, lng)</label><input id="m-ll" value="${data.lat&&data.lng?data.lat+', '+data.lng:''}" type="text"/></div></div>`,
+      <div class="g2"><div class="mf"><label>Status</label><select id="m-status"><option>im_einsatz</option><option>verfügbar</option><option>wartend</option><option>abgezogen</option></select></div><div class="mf"><label>Karte (lat, lng)</label><input id="m-ll" value="${data.lat&&data.lng?data.lat+', '+data.lng:''}" type="text"/></div></div>`,
       s:async()=>{const ll=document.getElementById('m-ll').value.split(',').map(x=>parseFloat(x.trim()));await af(`/api/einsaetze/${eid}/kraefte/${data.id}`,{method:'PATCH',body:JSON.stringify({staerke:parseInt(document.getElementById('m-staerke').value)||0,funktion:document.getElementById('m-funk2').value,fahrzeuge:document.getElementById('m-fzg').value,ansprechpartner:document.getElementById('m-ap').value,funk:document.getElementById('m-funk').value,status:document.getElementById('m-status').value,lat:ll[0]||null,lng:ll[1]||null})});closeModal();loadKraefte();toast('Aktualisiert','',false)}},
     'abschnitt':{t:'ABSCHNITT ANLEGEN',b:`
       <div class="g3"><div class="mf"><label>Nummer</label><input id="m-nr" value="A${abschnitte.length+1}" type="text"/></div><div class="mf"><label>Bezeichnung</label><input id="m-bez" type="text" placeholder="Bergung Innenstadt"/></div><div class="mf"><label>Status</label><select id="m-status"><option>aktiv</option><option>wartend</option><option>abgeschlossen</option></select></div></div>
@@ -1258,7 +1350,7 @@ function openModal(type,data={}){
       <div class="g2"><div class="mf"><label>Stärke (Pers.)</label><input id="m-staerke" type="number" value="0"/></div><div class="mf"><label>Position (lat, lng)</label><input id="m-ll" type="text" placeholder="48.473, 7.941"/></div></div>`,
       s:async()=>{const ll=document.getElementById('m-ll').value.split(',').map(x=>parseFloat(x.trim()));await af(`/api/einsaetze/${eid}/abschnitte`,{method:'POST',body:JSON.stringify({nummer:document.getElementById('m-nr').value,bezeichnung:document.getElementById('m-bez').value,aufgabe:document.getElementById('m-aufg').value,status:document.getElementById('m-status').value,abschnittsleiter_name:document.getElementById('m-alname').value,abschnittsleiter_funk:document.getElementById('m-alfunk').value,abschnittsleiter_tel:document.getElementById('m-altel').value,staerke:parseInt(document.getElementById('m-staerke').value)||0,lat:ll[0]||null,lng:ll[1]||null})});closeModal();toast('Abschnitt angelegt','',false)}},
     'ab-edit':{t:'ABSCHNITT BEARBEITEN',b:`
-      <div class="g3"><div class="mf"><label>Nummer</label><input id="m-nr" value="${data.nummer||''}" type="text"/></div><div class="mf"><label>Bezeichnung</label><input id="m-bez" value="${data.bezeichnung||''}" type="text"/></div><div class="mf"><label>Status</label><select id="m-status">${['aktiv','wartend','abgeschlossen'].map(s=>`<option${s===data.status?' selected':''}>${s}</option>`).join('')}</select></div></div>
+      <div class="g3"><div class="mf"><label>Nummer</label><input id="m-nr" value="${data.nummer||''}" type="text"/></div><div class="mf"><label>Bezeichnung</label><input id="m-bez" value="${data.bezeichnung||''}" type="text"/></div><div class="mf"><label>Status</label><select id="m-status"><option>aktiv</option><option>wartend</option><option>abgeschlossen</option></select></div></div>
       <div class="mf"><label>Aufgabe</label><input id="m-aufg" value="${data.aufgabe||''}" type="text"/></div>
       <div class="msec">Abschnittsleiter</div>
       <div class="g3"><div class="mf"><label>Name</label><input id="m-alname" value="${data.abschnittsleiter_name||''}" type="text"/></div><div class="mf"><label>Funk</label><input id="m-alfunk" value="${data.abschnittsleiter_funk||''}" type="text"/></div><div class="mf"><label>Telefon</label><input id="m-altel" value="${data.abschnittsleiter_tel||''}" type="text"/></div></div>
@@ -1306,6 +1398,28 @@ function openModal(type,data={}){
   document.getElementById('mb-foot').innerHTML=`<button class="msave" onclick="currentModalSave()">SPEICHERN</button><button class="mcx" onclick="closeModal()">Abbrechen</button>`;
   currentModalSave=cfg.s;
   document.getElementById('mb').classList.add('vis');
+  // Dynamische Dropdowns befüllen
+  const abSel=document.getElementById('m-ab');
+  if(abSel){abSel.innerHTML='<option value="">– kein –</option>'+abschnitte.map(a=>'<option value="'+a.id+'">'+a.nummer+' '+a.bezeichnung+'</option>').join('')}
+  // Vorausgefüllte selects auf data-Werte setzen
+  ['m-org','m-status','m-tzkat','m-inf-status'].forEach(id=>{
+    const sel=document.getElementById(id);
+    if(sel&&data[id.replace('m-','')]){
+      [...sel.options].forEach(o=>{if(o.value===data[id.replace('m-','')])o.selected=true});
+    }
+  });
+  // kraft-edit: Org vorauswählen
+  if(type==='kraft-edit'){
+    const os=document.getElementById('m-org');
+    if(os&&data.organisation)[...os.options].forEach(o=>{o.selected=o.value===data.organisation||o.text===data.organisation});
+    const ss=document.getElementById('m-status');
+    if(ss&&data.status)[...ss.options].forEach(o=>{o.selected=o.value===data.status});
+  }
+  // ab-edit: Status vorauswählen
+  if(type==='ab-edit'){
+    const ss=document.getElementById('m-status');
+    if(ss&&data.status)[...ss.options].forEach(o=>{o.selected=o.value===data.status});
+  }
 }
 function closeModal(){document.getElementById('mb').classList.remove('vis')}
 
@@ -1359,6 +1473,54 @@ async function saveTZFormular(data){
   })});
   activeTZ=null;document.querySelectorAll('.tzb').forEach(b=>b.classList.remove('sel'));
   closeModal();toast(`${tz.l} gesetzt`,titel||'–',false);
+}
+
+/* ── DRAG-TO-MAP ─────────────────────────────────────────────── */
+let draggedKraftId=null;
+function dragKraft(e,kid){
+  draggedKraftId=kid;
+  e.dataTransfer.effectAllowed='copy';
+  e.dataTransfer.setData('text/plain',String(kid));
+}
+function initMapDrop(){
+  const mapEl=document.getElementById('map');
+  if(!mapEl)return;
+  mapEl.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='copy'});
+  mapEl.addEventListener('drop',e=>{
+    e.preventDefault();
+    if(!draggedKraftId||!mapObj)return;
+    const rect=mapEl.getBoundingClientRect();
+    const x=e.clientX-rect.left,y=e.clientY-rect.top;
+    const latlng=mapObj.containerPointToLatLng([x,y]);
+    const k=kraefte.find(x=>x.id===draggedKraftId);
+    if(!k)return;
+    // Kraft-Position aktualisieren
+    af('/api/einsaetze/'+eid+'/kraefte/'+draggedKraftId,{method:'PATCH',body:JSON.stringify({lat:latlng.lat,lng:latlng.lng})})
+      .then(()=>{
+        // Marker auf Karte setzen
+        const farbe={FW:'#C8000A',RD:'#22B84E',THW:'#1A5FA8'}[k.organisation]||'#E07B00';
+        const tz=findTZ(k.organisation==='FW'?'fw':k.organisation==='RD'?'rd':k.organisation==='THW'?'thw':'fw');
+        const m=L.marker([latlng.lat,latlng.lng],{icon:makeTZIcon(tz,k.einheit||k.organisation)}).addTo(EL.krf);
+        m.bindPopup('<b style="color:#111">'+k.organisation+': '+k.einheit+'</b><br/>'+k.funktion+'<br/><small>'+k.staerke+' Pers.</small>');
+        updLayerCnts();
+        toast('Karte',''+k.einheit+' platziert',false);
+        // Kraft in Array aktualisieren
+        const idx=kraefte.findIndex(x=>x.id===draggedKraftId);
+        if(idx>=0){kraefte[idx].lat=latlng.lat;kraefte[idx].lng=latlng.lng}
+      });
+    draggedKraftId=null;
+  });
+}
+
+/* ── THEME ───────────────────────────────────────────────────── */
+function toggleTheme(){
+  const isLight=document.body.classList.toggle('theme-light');
+  localStorage.setItem('s2theme',isLight?'light':'dark');
+  document.getElementById('theme-btn').textContent=isLight?'🌓':'🌙';
+}
+function applyTheme(){
+  const t=localStorage.getItem('s2theme')||'dark';
+  if(t==='light'){document.body.classList.add('theme-light');document.getElementById('theme-btn').textContent='🌓'}
 }
 
 /* ── AUTO-LOGIN ─────────────────────────────────────────────── */
